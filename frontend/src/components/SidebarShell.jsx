@@ -38,10 +38,10 @@ export function SidebarSection({ title, children, noBorder }) {
     }}>
       {title && (
         <div style={{
-          fontSize: 9,
+          fontSize: 12,
           fontWeight: 700,
-          letterSpacing: '0.14em',
-          color: COLORS.textCaption,
+          letterSpacing: '0.06em',
+          color: COLORS.text,
           textTransform: 'uppercase',
           marginBottom: 12,
         }}>

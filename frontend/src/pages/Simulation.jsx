@@ -136,7 +136,6 @@ export default function Simulation() {
             boxShadow: '0 4px 24px rgba(0,0,0,0.5)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16,
           }}>
-            <span style={{ fontSize: 22, lineHeight: 1 }}>👆</span>
             <span style={{
               fontSize: 19, fontWeight: 800, color: COLORS.text,
               letterSpacing: '-0.01em',
