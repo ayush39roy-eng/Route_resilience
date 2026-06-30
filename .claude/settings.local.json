@@ -9,7 +9,13 @@
       "Bash(curl -s http://localhost:8000/api/criticality)",
       "Bash(npm run:*)",
       "Bash(md5:*)",
-      "Bash(python3 -:*)"
+      "Bash(python3 -:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(npx vite *)",
+      "Skill(run)",
+      "Bash(git rm:*)"
     ]
   }
 }
