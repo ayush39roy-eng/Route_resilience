@@ -1,0 +1,164 @@
+/* styles.css — mission-control glassmorphism design system */
+
+/* ── Page transitions ───────────────────────────────────────────────────── */
+@keyframes rr-fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.rr-page {
+  animation: rr-fade-up 0.28s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* ── Card animations ────────────────────────────────────────────────────── */
+@keyframes rr-card-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Interactive cards (Home feature cards) ─────────────────────────────── */
+.rr-card {
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  will-change: transform;
+  backdrop-filter: blur(18px) saturate(130%);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+}
+.rr-card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 14px 44px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(59,130,246,0.22),
+    0 0 24px rgba(59,130,246,0.08);
+  border-color: rgba(59,130,246,0.30) !important;
+}
+.rr-card:active { transform: translateY(0); }
+
+/* ── Dataset cards (Gallery) ────────────────────────────────────────────── */
+.rr-dataset-card {
+  animation: rr-card-in 0.24s cubic-bezier(0.4, 0, 0.2, 1) both;
+  transition: box-shadow 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+}
+.rr-dataset-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 36px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(59,130,246,0.22),
+    0 0 18px rgba(59,130,246,0.06);
+  border-color: rgba(59,130,246,0.28) !important;
+}
+
+/* ── Buttons ────────────────────────────────────────────────────────────── */
+.rr-btn {
+  transition: filter 0.15s ease, box-shadow 0.18s ease, transform 0.1s ease, border-color 0.15s ease;
+  outline: none;
+}
+.rr-btn:hover:not(:disabled)  { filter: brightness(1.15); }
+.rr-btn:active:not(:disabled) { filter: brightness(0.9); transform: translateY(1px); }
+.rr-btn:focus-visible {
+  box-shadow: 0 0 0 2px #0A0E14, 0 0 0 4px #3B82F6;
+}
+
+.rr-btn-primary:hover:not(:disabled) {
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.25), 0 0 16px rgba(59,130,246,0.18);
+}
+
+/* ── Zoom controls ──────────────────────────────────────────────────────── */
+.rr-zoom-btn {
+  transition: background-color 0.15s ease, border-color 0.18s ease,
+              color 0.15s ease, transform 0.1s ease, box-shadow 0.18s ease;
+  outline: none;
+}
+.rr-zoom-btn:hover {
+  background: #1A2237 !important;
+  border-color: rgba(59,130,246,0.35) !important;
+  color: #E2EAF4 !important;
+  box-shadow: 0 0 12px rgba(59,130,246,0.14) !important;
+}
+.rr-zoom-btn:active { transform: scale(0.92); }
+
+/* ── Gatekeeper rows ────────────────────────────────────────────────────── */
+.rr-gk-row {
+  transition: background-color 0.13s ease;
+  border-radius: 7px;
+  text-align: left;
+}
+.rr-gk-row:hover { background: rgba(30, 41, 59, 0.75) !important; }
+
+/* ── Sidebar scroll ─────────────────────────────────────────────────────── */
+.rr-sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #253347 transparent;
+}
+.rr-sidebar-scroll::-webkit-scrollbar       { width: 3px; }
+.rr-sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+.rr-sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #253347;
+  border-radius: 2px;
+}
+
+/* ── Tooltip card ───────────────────────────────────────────────────────── */
+.rr-tooltip {
+  position: absolute;
+  pointer-events: none;
+  z-index: 200;
+  background: rgba(12, 18, 34, 0.92);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-top-color: rgba(255,255,255,0.16);
+  border-left-color: rgba(255,255,255,0.13);
+  border-radius: 12px;
+  padding: 12px 15px;
+  min-width: 172px;
+  box-shadow:
+    0 12px 44px rgba(0,0,0,0.72),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  backdrop-filter: blur(28px) saturate(140%);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
+  animation: rr-tooltip-in 0.14s ease;
+}
+@keyframes rr-tooltip-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Toggle switch ──────────────────────────────────────────────────────── */
+.rr-toggle-track {
+  transition: background-color 0.22s ease, box-shadow 0.22s ease;
+}
+.rr-toggle-thumb {
+  transition: left 0.22s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.22s ease;
+}
+
+/* ── MiniStat value ─────────────────────────────────────────────────────── */
+.rr-stat-value {
+  transition: color 0.3s ease;
+}
+
+/* ── Efficiency badge ───────────────────────────────────────────────────── */
+.rr-eff-badge {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ── NavLink ─────────────────────────────────────────────────────────────── */
+.rr-navlink {
+  transition: color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+.rr-navlink:focus-visible {
+  box-shadow: 0 0 0 2px #3B82F6;
+}
+
+/* ── Status dot pulse ────────────────────────────────────────────────────── */
+@keyframes rr-glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0   rgba(59,130,246,0); }
+  50%       { box-shadow: 0 0 0 4px rgba(59,130,246,0.35); }
+}
+.rr-status-dot {
+  animation: rr-glow-pulse 2.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ── Space Grotesk for display headings ──────────────────────────────────── */
+.rr-display {
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  letter-spacing: -0.03em;
+}

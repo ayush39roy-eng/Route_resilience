@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip install:*)",
+      "Bash(npm install:*)",
+      "Bash(pip3 install:*)",
+      "Bash(python3 -c \"import networkx; print\\(''networkx ok''\\)\")",
+      "Bash(python3:*)",
+      "Bash(curl -s http://localhost:8000/api/criticality)",
+      "Bash(npm run:*)",
+      "Bash(md5:*)",
+      "Bash(python3 -:*)"
+    ]
+  }
+}
