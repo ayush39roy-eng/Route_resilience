@@ -124,37 +124,38 @@ export default function Simulation() {
           />
         )}
 
-        {/* ── Feature 1: Instruction hint (top-left) ── */}
-        {showHint && graphData && (
+        {/* ── Feature 1: Instruction hint (horizontal top bar) ── */}
+        {showHint && graphData && routeMode === 'none' && !disasterMode && (
           <div style={{
-            position: 'absolute', top: 20, left: 20, zIndex: 50,
-            background: `${COLORS.panel}f0`,
-            border: `1px solid rgba(255,255,255,0.10)`,
-            borderTop: `1px solid rgba(255,255,255,0.16)`,
-            borderRadius: 10, padding: '10px 14px',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            maxWidth: 210,
-            boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+            position: 'absolute', top: 0, left: 0, right: 0, zIndex: 50,
+            background: `${COLORS.panel}f5`,
+            borderBottom: `1px solid rgba(255,255,255,0.12)`,
+            padding: '16px 28px',
+            backdropFilter: 'blur(18px)',
+            WebkitBackdropFilter: 'blur(18px)',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.5)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16,
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.text, marginBottom: 4 }}>
-                Tap any node to disable it
-              </div>
-              <button
-                onClick={() => setShowHint(false)}
-                style={{
-                  background: 'none', border: 'none', cursor: 'pointer',
-                  color: COLORS.textCaption, fontSize: 14, lineHeight: 1,
-                  padding: 0, flexShrink: 0, marginTop: 1,
-                }}
-              >
-                ×
-              </button>
-            </div>
-            <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.55 }}>
+            <span style={{ fontSize: 22, lineHeight: 1 }}>👆</span>
+            <span style={{
+              fontSize: 19, fontWeight: 800, color: COLORS.text,
+              letterSpacing: '-0.01em',
+            }}>
+              Tap any node to disable it
+            </span>
+            <span style={{ fontSize: 13, color: COLORS.textMuted, fontWeight: 500 }}>
               Disabled nodes turn off and the network recomputes resilience live.
-            </div>
+            </span>
+            <button
+              onClick={() => setShowHint(false)}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer',
+                color: COLORS.textCaption, fontSize: 20, lineHeight: 1,
+                padding: 0, marginLeft: 8, flexShrink: 0,
+              }}
+            >
+              ×
+            </button>
           </div>
         )}
 
@@ -225,49 +226,134 @@ export default function Simulation() {
           />
         </SidebarSection>
 
-        {/* Route planner */}
+        {/* Route planner — boxed card, set apart visually */}
         <SidebarSection title="Route Planner">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginBottom: 10 }}>
-            <RouteBtn
-              active={routeMode === 'pickStart'}
-              color={COLORS.success}
-              onClick={() => setRouteMode(routeMode === 'pickStart' ? 'none' : 'pickStart')}
-            >
-              {routeMode === 'pickStart' ? '▶ Click start node…' : 'Set Start'}
-              {routeStart != null && routeMode !== 'pickStart' && (
-                <NodeTag id={routeStart} />
-              )}
-            </RouteBtn>
+          <div style={{
+            background: `${COLORS.accent}0d`,
+            border: `1px solid ${COLORS.accent}33`,
+            borderTop: `1px solid ${COLORS.accent}4a`,
+            borderRadius: 12,
+            padding: 12,
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginBottom: routeData || routeData?.error || rerouteData ? 10 : 0 }}>
+              <RouteBtn
+                active={routeMode === 'pickStart'}
+                color={COLORS.success}
+                onClick={() => setRouteMode(routeMode === 'pickStart' ? 'none' : 'pickStart')}
+              >
+                {routeMode === 'pickStart' ? '▶ Click start node…' : 'Set Start'}
+                {routeStart != null && routeMode !== 'pickStart' && (
+                  <NodeTag id={routeStart} />
+                )}
+              </RouteBtn>
 
-            <RouteBtn
-              active={routeMode === 'pickEnd'}
-              color={COLORS.danger}
-              onClick={() => setRouteMode(routeMode === 'pickEnd' ? 'none' : 'pickEnd')}
-              disabled={routeStart == null}
-            >
-              {routeMode === 'pickEnd' ? '▶ Click end node…' : 'Set End'}
-              {routeEnd != null && routeMode !== 'pickEnd' && (
-                <NodeTag id={routeEnd} />
-              )}
-            </RouteBtn>
+              <RouteBtn
+                active={routeMode === 'pickEnd'}
+                color={COLORS.danger}
+                onClick={() => setRouteMode(routeMode === 'pickEnd' ? 'none' : 'pickEnd')}
+                disabled={routeStart == null}
+              >
+                {routeMode === 'pickEnd' ? '▶ Click end node…' : 'Set End'}
+                {routeEnd != null && routeMode !== 'pickEnd' && (
+                  <NodeTag id={routeEnd} />
+                )}
+              </RouteBtn>
+            </div>
+
+            {routeData && !routeData.error && (
+              <>
+                <StatRow label="Path nodes" value={routeData.path?.length ?? '—'} />
+                <StatRow label="Length (px)" value={routeData.total_length?.toFixed(1) ?? '—'} />
+              </>
+            )}
+            {routeData?.error && (
+              <div style={{ fontSize: 12, color: COLORS.danger, marginTop: 4 }}>
+                {routeData.error}
+              </div>
+            )}
+            {rerouteData && (
+              <div style={{ marginTop: 6, fontSize: 11, fontWeight: 500, color: COLORS.pathRerouted }}>
+                ↺ Rerouted around disabled nodes
+              </div>
+            )}
           </div>
+        </SidebarSection>
 
-          {routeData && !routeData.error && (
-            <>
-              <StatRow label="Path nodes" value={routeData.path?.length ?? '—'} />
-              <StatRow label="Length (px)" value={routeData.total_length?.toFixed(1) ?? '—'} />
-            </>
-          )}
-          {routeData?.error && (
-            <div style={{ fontSize: 12, color: COLORS.danger, marginTop: 4 }}>
-              {routeData.error}
+        {/* Disaster simulation — boxed card, set apart visually */}
+        <SidebarSection title="Disaster Simulation">
+          <div style={{
+            background: `${COLORS.danger}0d`,
+            border: `1px solid ${COLORS.danger}33`,
+            borderTop: `1px solid ${COLORS.danger}4a`,
+            borderRadius: 12,
+            padding: 12,
+          }}>
+            <div style={{ fontSize: 12, color: COLORS.textMuted, lineHeight: 1.6, marginBottom: 10 }}>
+              Draw an area on the map to knock out every node inside it at once.
             </div>
-          )}
-          {rerouteData && (
-            <div style={{ marginTop: 6, fontSize: 11, fontWeight: 500, color: COLORS.pathRerouted }}>
-              ↺ Rerouted around disabled nodes
-            </div>
-          )}
+
+            <button
+              onClick={() => {
+                setDisasterMode(m => !m)
+                if (routeMode !== 'none') setRouteMode('none')
+              }}
+              disabled={!graphData}
+              className="rr-btn"
+              style={{
+                width: '100%', padding: '8px', borderRadius: 8,
+                background: disasterMode ? `${COLORS.danger}22` : COLORS.warningSubtle,
+                border: `1px solid ${disasterMode ? COLORS.danger : COLORS.warning}55`,
+                color: disasterMode ? COLORS.danger : COLORS.warning,
+                fontSize: 12, fontWeight: 600,
+                cursor: graphData ? 'pointer' : 'not-allowed',
+                opacity: graphData ? 1 : 0.4,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              }}
+            >
+              <span>{disasterMode ? '■' : '⚡'}</span>
+              {disasterMode ? 'Cancel Disaster' : 'Simulate Disaster'}
+            </button>
+
+            {disasterResult && (
+              <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${COLORS.danger}22` }}>
+                {disasterResult.message ? (
+                  <div style={{ fontSize: 12, color: COLORS.textMuted }}>
+                    {disasterResult.message}
+                  </div>
+                ) : (
+                  <>
+                    <StatRow label="Nodes in area"   value={disasterResult.insideCount} />
+                    <StatRow label="Disabled"         value={disasterResult.selected.length}
+                      accent={COLORS.danger} />
+                    <StatRow label="Junctions hit"    value={disasterResult.junctionCount}
+                      accent={disasterResult.junctionCount > 0 ? COLORS.warning : undefined} />
+                    <div style={{ marginTop: 8 }}>
+                      <div style={{
+                        fontSize: 9, fontWeight: 700, letterSpacing: '0.12em',
+                        color: COLORS.textCaption, textTransform: 'uppercase', marginBottom: 6,
+                      }}>
+                        Disabled node IDs
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                        {disasterResult.selected.map(id => (
+                          <span key={id} style={{
+                            fontSize: 10, padding: '2px 6px', borderRadius: 4,
+                            background: `${COLORS.pathRerouted}22`,
+                            border: `1px solid ${COLORS.pathRerouted}44`,
+                            color: COLORS.pathRerouted,
+                            fontFamily: "'JetBrains Mono','Fira Code',monospace",
+                            fontWeight: 600,
+                          }}>
+                            {id}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </SidebarSection>
 
         {/* Controls */}
@@ -276,29 +362,6 @@ export default function Simulation() {
             Click nodes to disable / re-enable them. Disabled nodes show ×.
           </div>
           <Toggle label="Show healed edges" value={showHealed} onChange={setShowHealed} />
-
-          {/* Feature 3 — Simulate Disaster button */}
-          <button
-            onClick={() => {
-              setDisasterMode(m => !m)
-              if (routeMode !== 'none') setRouteMode('none')
-            }}
-            disabled={!graphData}
-            className="rr-btn"
-            style={{
-              width: '100%', marginTop: 6, padding: '8px', borderRadius: 8,
-              background: disasterMode ? `${COLORS.danger}22` : COLORS.warningSubtle,
-              border: `1px solid ${disasterMode ? COLORS.danger : COLORS.warning}55`,
-              color: disasterMode ? COLORS.danger : COLORS.warning,
-              fontSize: 12, fontWeight: 600,
-              cursor: graphData ? 'pointer' : 'not-allowed',
-              opacity: graphData ? 1 : 0.4,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-            }}
-          >
-            <span>{disasterMode ? '■' : '⚡'}</span>
-            {disasterMode ? 'Cancel Disaster' : 'Simulate Disaster'}
-          </button>
 
           <button
             onClick={handleReset}
@@ -315,47 +378,6 @@ export default function Simulation() {
             Reset All
           </button>
         </SidebarSection>
-
-        {/* Disaster result summary */}
-        {disasterResult && (
-          <SidebarSection title="Disaster Report">
-            {disasterResult.message ? (
-              <div style={{ fontSize: 12, color: COLORS.textMuted }}>
-                {disasterResult.message}
-              </div>
-            ) : (
-              <>
-                <StatRow label="Nodes in area"   value={disasterResult.insideCount} />
-                <StatRow label="Disabled"         value={disasterResult.selected.length}
-                  accent={COLORS.danger} />
-                <StatRow label="Junctions hit"    value={disasterResult.junctionCount}
-                  accent={disasterResult.junctionCount > 0 ? COLORS.warning : undefined} />
-                <div style={{ marginTop: 8 }}>
-                  <div style={{
-                    fontSize: 9, fontWeight: 700, letterSpacing: '0.12em',
-                    color: COLORS.textCaption, textTransform: 'uppercase', marginBottom: 6,
-                  }}>
-                    Disabled node IDs
-                  </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                    {disasterResult.selected.map(id => (
-                      <span key={id} style={{
-                        fontSize: 10, padding: '2px 6px', borderRadius: 4,
-                        background: `${COLORS.pathRerouted}22`,
-                        border: `1px solid ${COLORS.pathRerouted}44`,
-                        color: COLORS.pathRerouted,
-                        fontFamily: "'JetBrains Mono','Fira Code',monospace",
-                        fontWeight: 600,
-                      }}>
-                        {id}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-          </SidebarSection>
-        )}
 
         {/* Top gatekeepers */}
         <SidebarSection title="Top Gatekeepers" noBorder>
