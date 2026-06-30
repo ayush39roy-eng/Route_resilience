@@ -1,6 +1,7 @@
 // Layers.jsx — pipeline image layers viewer (side-by-side)
 import { useDataset } from '../context/DatasetContext.jsx'
 import { useNavigate } from 'react-router-dom'
+import { API } from '../api.js'
 import { COLORS } from '../colors.js'
 
 const LAYER_DEFS = [
@@ -71,7 +72,7 @@ export default function Layers() {
             }}>
               {LAYER_DEFS.map(({ key, label, desc }) => {
                 const filename = ds.pngs?.[key]
-                const url = filename ? `/static/${ds.folder}/${filename}` : null
+                const url = filename ? `${API}/static/${ds.folder}/${filename}` : null
                 return (
                   <div key={key} style={{
                     background: COLORS.panelElevated,

@@ -1,6 +1,7 @@
 // Gallery.jsx — dataset grid with glass cards + active selection
 import { useNavigate } from 'react-router-dom'
 import { useDataset } from '../context/DatasetContext.jsx'
+import { API } from '../api.js'
 import { COLORS } from '../colors.js'
 
 export default function Gallery() {
@@ -60,7 +61,7 @@ export default function Gallery() {
 }
 
 function DatasetCard({ ds, isActive, index, onSelect, onAnalyse, onSimulate }) {
-  const thumbUrl     = ds.thumbnail_url
+  const thumbUrl     = ds.thumbnail_url ? `${API}${ds.thumbnail_url}` : null
   const hasMultiComp = ds.component_count > 1
 
   return (

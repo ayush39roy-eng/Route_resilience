@@ -1,6 +1,6 @@
 // api.js — all backend calls, parameterised by dataset id
 
-const API = import.meta.env.VITE_API_URL || ''
+export const API = import.meta.env.VITE_API_URL || ''
 const BASE = `${API}/api`
 
 export async function fetchDatasets() {
