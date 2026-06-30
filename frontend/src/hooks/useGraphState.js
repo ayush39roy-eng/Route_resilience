@@ -89,6 +89,14 @@ export function useGraphState(datasetId) {
     }
   }, [routeMode, toggleNode])
 
+  const addDisabledNodes = useCallback((ids) => {
+    setDisabledNodes(prev => {
+      const next = new Set(prev)
+      ids.forEach(id => next.add(id))
+      return next
+    })
+  }, [])
+
   const reset = useCallback(() => {
     setDisabledNodes(new Set())
     setRouteStart(null); setRouteEnd(null)
@@ -106,7 +114,7 @@ export function useGraphState(datasetId) {
     disabledNodes, hoveredNode, setHoveredNode,
     routeStart, routeEnd, routeData, rerouteData, ablateResult,
     routeMode, setRouteMode,
-    handleNodeClick, reset, highlightGatekeeper,
+    handleNodeClick, addDisabledNodes, reset, highlightGatekeeper,
     setRouteStart, setRouteEnd,
   }
 }

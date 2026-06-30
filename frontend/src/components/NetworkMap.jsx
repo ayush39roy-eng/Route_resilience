@@ -18,6 +18,40 @@ function useBounds(nodes) {
   }, [nodes])
 }
 
+// ── Disaster node picker (pure util — no React) ────────────────────────────
+function pickDisasterNodes(rect, nodes, transform, toSvgFn) {
+  const minX = Math.min(rect.x1, rect.x2)
+  const maxX = Math.max(rect.x1, rect.x2)
+  const minY = Math.min(rect.y1, rect.y2)
+  const maxY = Math.max(rect.y1, rect.y2)
+
+  // Nodes whose screen positions fall inside the drawn box
+  const inside = nodes.filter(node => {
+    const { x, y } = toSvgFn(node.col, node.row)
+    const sx = x * transform.scale + transform.x
+    const sy = y * transform.scale + transform.y
+    return sx >= minX && sx <= maxX && sy >= minY && sy <= maxY
+  })
+
+  const shuffle = arr => [...arr].sort(() => Math.random() - 0.5)
+  const junctions    = shuffle(inside.filter(n => n.degree >= 3))
+  const nonJunctions = shuffle(inside.filter(n => n.degree < 3))
+
+  // At most 1 junction, fill the rest with non-junctions, total 2-3
+  const jPick = junctions.slice(0, 1)
+  const maxTotal = jPick.length + nonJunctions.length
+  const targetTotal = maxTotal >= 3
+    ? (Math.random() < 0.5 ? 2 : 3)
+    : maxTotal
+  const nPick = nonJunctions.slice(0, Math.max(0, targetTotal - jPick.length))
+  const chosen = [...jPick, ...nPick]
+
+  return {
+    selected: chosen.map(n => n.id),
+    insideCount: inside.length,
+  }
+}
+
 export default function NetworkMap({
   graphData, criticality,
   disabledNodes, hoveredNode, setHoveredNode,
@@ -28,13 +62,20 @@ export default function NetworkMap({
   bgMode = 'dark',
   bgImageUrls = {},
   bgImageSize = null,
+  // disaster mode
+  disasterMode = false,
+  onDisasterSelect = null,
+  disasterNodes = new Set(),
 }) {
   const containerRef = useRef(null)
   const [size,      setSize]      = useState({ w: 800, h: 600 })
   const [transform, setTransform] = useState({ x: 0, y: 0, scale: 1 })
   const [mousePos,  setMousePos]  = useState({ x: 0, y: 0 })
-  const isPanning = useRef(false)
-  const panStart  = useRef(null)
+  const [dragRect,  setDragRect]  = useState(null)  // disaster selection box
+  const isPanning          = useRef(false)
+  const panStart           = useRef(null)
+  const isDraggingDisaster = useRef(false)
+  const dragStart          = useRef(null)
 
   useEffect(() => {
     const el = containerRef.current
@@ -116,26 +157,67 @@ export default function NetworkMap({
   // ── Event handlers ────────────────────────────────────────────────────────
   function handleNodeMouseEnter(id) { setHoveredNode(id) }
   function handleNodeMouseLeave()   { setHoveredNode(null) }
-  function handleNodeClick(id, e)   { e.stopPropagation(); onNodeClick?.(id) }
+  function handleNodeClick(id, e) {
+    if (disasterMode) return   // suppress normal clicks while drawing disaster box
+    e.stopPropagation()
+    onNodeClick?.(id)
+  }
 
   function handleWheel(e) {
     e.preventDefault()
     const factor = e.deltaY < 0 ? 1.12 : 0.89
     setTransform(t => ({ ...t, scale: Math.max(0.2, Math.min(12, t.scale * factor)) }))
   }
+
   function handleMouseDown(e) {
+    if (disasterMode && e.button === 0) {
+      const elRect = containerRef.current?.getBoundingClientRect()
+      if (!elRect) return
+      const x = e.clientX - elRect.left
+      const y = e.clientY - elRect.top
+      isDraggingDisaster.current = true
+      dragStart.current = { x, y }
+      setDragRect({ x1: x, y1: y, x2: x, y2: y })
+      e.preventDefault()
+      return
+    }
     if (e.button !== 1 && !e.altKey) return
     isPanning.current = true
     panStart.current = { x: e.clientX - transform.x, y: e.clientY - transform.y }
     e.preventDefault()
   }
+
   function handleMouseMove(e) {
+    if (isDraggingDisaster.current) {
+      const elRect = containerRef.current?.getBoundingClientRect()
+      if (elRect) {
+        setDragRect(dr => dr
+          ? { ...dr, x2: e.clientX - elRect.left, y2: e.clientY - elRect.top }
+          : null)
+      }
+      return
+    }
     if (isPanning.current)
       setTransform(t => ({ ...t, x: e.clientX - panStart.current.x, y: e.clientY - panStart.current.y }))
-    const rect = containerRef.current?.getBoundingClientRect()
-    if (rect) setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+    const elRect = containerRef.current?.getBoundingClientRect()
+    if (elRect) setMousePos({ x: e.clientX - elRect.left, y: e.clientY - elRect.top })
   }
-  function handleMouseUp() { isPanning.current = false }
+
+  function handleMouseUp() {
+    if (isDraggingDisaster.current) {
+      isDraggingDisaster.current = false
+      if (dragRect) {
+        const w = Math.abs(dragRect.x2 - dragRect.x1)
+        const h = Math.abs(dragRect.y2 - dragRect.y1)
+        if (w > 8 && h > 8) {
+          onDisasterSelect?.(pickDisasterNodes(dragRect, nodes, transform, toSvg))
+        }
+        setDragRect(null)
+      }
+      return
+    }
+    isPanning.current = false
+  }
 
   // ── Node appearance ───────────────────────────────────────────────────────
   function nodeRadius(node) {
@@ -144,6 +226,8 @@ export default function NetworkMap({
   }
 
   function nodeColor(node) {
+    // Disaster-disabled nodes get a distinct orange tint
+    if (disabledNodes.has(node.id) && disasterNodes.has(node.id)) return COLORS.pathRerouted
     if (disabledNodes.has(node.id))   return COLORS.nodeDisabled
     if (disconnectedSet.has(node.id)) return COLORS.disconnected
     if (node.id === hoveredNode)       return COLORS.nodeHovered
@@ -337,6 +421,21 @@ export default function NetworkMap({
             )
           })}
         </g>
+
+        {/* Disaster selection rectangle */}
+        {dragRect && (
+          <rect
+            x={Math.min(dragRect.x1, dragRect.x2)}
+            y={Math.min(dragRect.y1, dragRect.y2)}
+            width={Math.abs(dragRect.x2 - dragRect.x1)}
+            height={Math.abs(dragRect.y2 - dragRect.y1)}
+            fill={`${COLORS.danger}1A`}
+            stroke={COLORS.danger}
+            strokeWidth={1.5}
+            strokeDasharray="6,4"
+            style={{ pointerEvents: 'none' }}
+          />
+        )}
 
         {/* Vignette overlay */}
         <rect
