@@ -39,6 +39,14 @@ export function useGraphState(datasetId) {
       .catch(e => { setError(e.message); setLoading(false) })
   }, [datasetId])
 
+  // Refs so the ablation effect always reads current route state (avoids stale closure)
+  const routeDataRef  = useRef(routeData)
+  const routeStartRef = useRef(routeStart)
+  const routeEndRef   = useRef(routeEnd)
+  useEffect(() => { routeDataRef.current  = routeData  }, [routeData])
+  useEffect(() => { routeStartRef.current = routeStart }, [routeStart])
+  useEffect(() => { routeEndRef.current   = routeEnd   }, [routeEnd])
+
   // Re-run ablation when disabled set changes
   const ablateRef = useRef(null)
   useEffect(() => {
@@ -48,8 +56,11 @@ export function useGraphState(datasetId) {
     ablateRef.current = setTimeout(() => {
       postAblate(datasetId, ids).then(res => {
         setAblateResult(res)
-        if (routeData && routeStart != null && routeEnd != null) {
-          fetchRoute(datasetId, routeStart, routeEnd, ids)
+        const rd = routeDataRef.current
+        const rs = routeStartRef.current
+        const re = routeEndRef.current
+        if (rd && rs != null && re != null) {
+          fetchRoute(datasetId, rs, re, ids)
             .then(r => setRerouteData(r))
             .catch(() => setRerouteData(null))
         }
