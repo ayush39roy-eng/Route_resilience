@@ -37,11 +37,11 @@ function pickDisasterNodes(rect, nodes, transform, toSvgFn) {
   const junctions    = shuffle(inside.filter(n => n.degree >= 3))
   const nonJunctions = shuffle(inside.filter(n => n.degree < 3))
 
-  // At most 1 junction, fill the rest with non-junctions, total 2-3
-  const jPick = junctions.slice(0, 1)
+  // Up to 3 junctions + fill non-junctions, total 5-8 nodes for real impact
+  const jPick = junctions.slice(0, 3)
   const maxTotal = jPick.length + nonJunctions.length
-  const targetTotal = maxTotal >= 3
-    ? (Math.random() < 0.5 ? 2 : 3)
+  const targetTotal = maxTotal >= 8
+    ? 5 + Math.floor(Math.random() * 4)   // 5, 6, 7, or 8
     : maxTotal
   const nPick = nonJunctions.slice(0, Math.max(0, targetTotal - jPick.length))
   const chosen = [...jPick, ...nPick]
