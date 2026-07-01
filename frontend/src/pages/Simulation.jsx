@@ -8,6 +8,7 @@ import {
   Toggle, GatekeeperRow, Divider, EfficiencyBadge,
 } from '../components/SidebarShell.jsx'
 import { COLORS } from '../colors.js'
+import { MapOverlay } from '../components/SpaceLoader.jsx'
 
 export default function Simulation() {
   const { activeDataset } = useDataset()
@@ -98,11 +99,7 @@ export default function Simulation() {
           </div>
         </div>
 
-        {loading && <Overlay>Loading network…</Overlay>}
-        {error   && <Overlay color={COLORS.danger}>{error}</Overlay>}
-        {!loading && !error && !ds && (
-          <Overlay>No dataset selected — pick one in the Gallery.</Overlay>
-        )}
+        <MapOverlay loading={loading} error={error} empty={!loading && !error && !ds} />
         {graphData && (
           <NetworkMap
             graphData={graphData}
@@ -407,17 +404,6 @@ export default function Simulation() {
   )
 }
 
-function Overlay({ children, color }) {
-  return (
-    <div style={{
-      position: 'absolute', inset: 0, display: 'flex',
-      alignItems: 'center', justifyContent: 'center',
-      color: color || COLORS.textMuted, fontSize: 14,
-    }}>
-      {children}
-    </div>
-  )
-}
 
 function RouteBtn({ children, active, color, onClick, disabled }) {
   return (

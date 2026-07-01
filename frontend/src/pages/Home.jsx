@@ -1,7 +1,8 @@
-// Home.jsx — cinematic mission-control landing page
+// Home.jsx — cinematic space-mission landing page with Three.js hero
 import { useNavigate } from 'react-router-dom'
 import { useDataset } from '../context/DatasetContext.jsx'
 import { COLORS } from '../colors.js'
+import SpaceHero from '../components/SpaceHero.jsx'
 
 const FEATURES = [
   {
@@ -10,7 +11,8 @@ const FEATURES = [
     desc: 'Road networks extracted via segmentation → skeletonisation → graph pipeline.',
     link: '/layers',
     cta: 'View Layers',
-    color: COLORS.accent,
+    accent: COLORS.secondary,
+    accentSubtle: COLORS.secondarySubtle,
   },
   {
     icon: '🔥',
@@ -18,15 +20,17 @@ const FEATURES = [
     desc: 'Betweenness centrality reveals which intersections are true bottlenecks.',
     link: '/criticality',
     cta: 'Open Heatmap',
-    color: COLORS.warning,
+    accent: COLORS.accent,
+    accentSubtle: COLORS.accentSubtle,
   },
   {
-    icon: '💥',
+    icon: '⚡',
     title: 'Disaster Simulation',
     desc: 'Disable any node — resilience index and global efficiency update live.',
     link: '/simulation',
     cta: 'Simulate',
-    color: COLORS.danger,
+    accent: COLORS.danger,
+    accentSubtle: COLORS.dangerSubtle,
   },
   {
     icon: '🗺',
@@ -34,145 +38,308 @@ const FEATURES = [
     desc: 'Browse extracted graphs with thumbnails, stats and quick actions.',
     link: '/gallery',
     cta: 'Browse',
-    color: COLORS.success,
+    accent: COLORS.success,
+    accentSubtle: COLORS.successSubtle,
   },
 ]
 
 export default function Home() {
-  const navigate          = useNavigate()
+  const navigate = useNavigate()
   const { activeDataset } = useDataset()
 
   return (
-    <div className="rr-page" style={{ overflowY: 'auto', flex: 1, minHeight: 0 }}>
-      <div style={{ maxWidth: 820, margin: '0 auto', padding: '56px 24px 72px' }}>
+    <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', minHeight: 0 }}>
 
-        {/* ── Hero ── */}
-        <div style={{ textAlign: 'center', marginBottom: 60 }}>
+      {/* ── Hero section — full viewport height ── */}
+      <div style={{
+        position: 'relative',
+        minHeight: 'calc(100vh - 54px)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+      }}>
 
-          {/* Eyebrow badge */}
+        {/* Three.js node-network scene */}
+        <SpaceHero />
+
+        {/* Ambient amber glow from below */}
+        <div className="rr-hero-glow" style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0,
+          height: '55%',
+          background: 'radial-gradient(ellipse 80% 100% at 50% 100%, rgba(255,122,26,0.18) 0%, transparent 70%)',
+          pointerEvents: 'none', zIndex: 1,
+        }} />
+
+        {/* Cool blue rim from top-right */}
+        <div style={{
+          position: 'absolute', top: 0, right: 0,
+          width: '60%', height: '40%',
+          background: 'radial-gradient(ellipse 80% 100% at 100% 0%, rgba(59,158,255,0.10) 0%, transparent 70%)',
+          pointerEvents: 'none', zIndex: 1,
+        }} />
+
+        {/* ── Hero content ── */}
+        <div style={{
+          position: 'relative', zIndex: 10,
+          textAlign: 'center',
+          padding: '0 24px',
+          maxWidth: 700,
+        }}>
+
+          {/* Eyebrow */}
           <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            padding: '4px 14px', borderRadius: 999,
-            background: COLORS.accentSubtle,
-            border: `1px solid ${COLORS.accent}33`,
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            padding: '5px 16px', borderRadius: 999,
+            background: `${COLORS.accent}18`,
+            border: `1px solid ${COLORS.accent}35`,
             fontSize: 10, fontWeight: 700, color: COLORS.accent,
-            letterSpacing: '0.12em', textTransform: 'uppercase',
-            marginBottom: 24,
+            letterSpacing: '0.14em', textTransform: 'uppercase',
+            marginBottom: 28,
+            boxShadow: `0 0 20px ${COLORS.accent}18`,
           }}>
-            Road Network Intelligence
+            <span style={{
+              display: 'inline-block', width: 5, height: 5, borderRadius: '50%',
+              background: COLORS.accent,
+              boxShadow: `0 0 6px ${COLORS.accent}`,
+            }} />
+            ISRO · Road Network Intelligence
           </div>
 
+          {/* Main title */}
           <h1 className="rr-display" style={{
-            fontSize: 52, fontWeight: 700, color: COLORS.text,
-            lineHeight: 1.05, letterSpacing: '-0.03em', marginBottom: 18,
+            fontSize: 'clamp(42px, 7vw, 72px)',
+            fontWeight: 800,
+            color: COLORS.text,
+            lineHeight: 1.03,
+            letterSpacing: '-0.04em',
+            marginBottom: 20,
+            textShadow: `0 0 80px ${COLORS.accent}30, 0 2px 40px rgba(0,0,0,0.8)`,
           }}>
-            Route Resilience
+            Route{' '}
+            <span style={{
+              color: COLORS.accent,
+              textShadow: `0 0 40px ${COLORS.accent}60, 0 0 80px ${COLORS.accent}30`,
+            }}>
+              Resilience
+            </span>
           </h1>
 
+          {/* Subtitle */}
           <p style={{
-            fontSize: 15, color: COLORS.textMuted, lineHeight: 1.7,
-            maxWidth: 420, margin: '0 auto 32px',
+            fontSize: 15, color: COLORS.textMuted, lineHeight: 1.75,
+            maxWidth: 440, margin: '0 auto 36px',
+            textShadow: '0 1px 12px rgba(0,0,0,0.9)',
           }}>
-            Satellite road extraction · criticality analysis · disaster simulation
+            Satellite road extraction&nbsp;·&nbsp;criticality analysis&nbsp;·&nbsp;disaster simulation
           </p>
 
           {/* CTA buttons */}
-          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
             <button
               onClick={() => navigate('/criticality')}
               className="rr-btn rr-btn-primary"
               style={{
-                padding: '11px 26px',
+                padding: '12px 28px',
                 background: COLORS.accent,
                 border: 'none',
-                borderRadius: 9,
-                color: '#fff',
-                fontSize: 13, fontWeight: 600,
+                borderRadius: 10,
+                color: '#0A0A0F',
+                fontSize: 13, fontWeight: 700,
                 cursor: 'pointer',
                 letterSpacing: '-0.01em',
-                boxShadow: `0 4px 20px ${COLORS.accent}40`,
+                boxShadow: `0 4px 24px ${COLORS.accent}50, 0 0 0 1px ${COLORS.accent}`,
               }}
             >
               Open Heatmap
             </button>
             <button
+              onClick={() => navigate('/simulation')}
+              className="rr-btn"
+              style={{
+                padding: '12px 28px',
+                background: 'rgba(255,122,26,0.10)',
+                border: `1px solid ${COLORS.accent}40`,
+                borderRadius: 10,
+                color: COLORS.accent,
+                fontSize: 13, fontWeight: 600,
+                cursor: 'pointer',
+                backdropFilter: 'blur(12px)',
+              }}
+            >
+              Simulate Disaster
+            </button>
+            <button
               onClick={() => navigate('/gallery')}
               className="rr-btn"
               style={{
-                padding: '11px 26px',
-                background: COLORS.panelElevated,
-                border: `1px solid ${COLORS.borderMid}`,
-                borderRadius: 9,
-                color: COLORS.text,
+                padding: '12px 28px',
+                background: `${COLORS.panelElevated}cc`,
+                border: `1px solid ${COLORS.border}`,
+                borderRadius: 10,
+                color: COLORS.textMuted,
                 fontSize: 13, fontWeight: 500,
                 cursor: 'pointer',
+                backdropFilter: 'blur(12px)',
               }}
             >
               Browse Datasets
             </button>
           </div>
 
-          {/* Active dataset indicator */}
+          {/* Active dataset pill */}
           {activeDataset && (
             <div style={{
-              marginTop: 20, fontSize: 12, color: COLORS.textCaption,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+              marginTop: 24, fontSize: 12, color: COLORS.textCaption,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             }}>
               <div style={{
                 width: 6, height: 6, borderRadius: '50%',
                 background: COLORS.success, flexShrink: 0,
-                boxShadow: `0 0 6px ${COLORS.success}60`,
+                boxShadow: `0 0 7px ${COLORS.success}80`,
               }} />
               <span>
                 Active:{' '}
                 <span style={{ color: COLORS.accent, fontWeight: 600 }}>
                   {activeDataset.name}
                 </span>
-                {' '}· {activeDataset.node_count} nodes · {activeDataset.edge_count} edges
+                {' '}·{' '}{activeDataset.node_count} nodes · {activeDataset.edge_count} edges
               </span>
             </div>
           )}
         </div>
 
-        {/* ── Feature cards ── */}
+        {/* Scroll hint */}
+        <div style={{
+          position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)',
+          fontSize: 11, color: COLORS.textCaption, letterSpacing: '0.1em',
+          textTransform: 'uppercase', zIndex: 10,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+        }}>
+          <span>Scroll</span>
+          <svg width="12" height="16" viewBox="0 0 12 16" fill="none">
+            <path d="M6 2v10M2 8l4 5 4-5" stroke={COLORS.textCaption} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      {/* ── Feature cards ── */}
+      <div style={{
+        maxWidth: 960, margin: '0 auto',
+        padding: '72px 24px 80px',
+      }}>
+
+        {/* Section header */}
+        <div style={{ textAlign: 'center', marginBottom: 48 }}>
+          <div style={{
+            fontSize: 10, fontWeight: 700, letterSpacing: '0.14em',
+            color: COLORS.textCaption, textTransform: 'uppercase', marginBottom: 12,
+          }}>
+            Mission Capabilities
+          </div>
+          <h2 className="rr-display" style={{
+            fontSize: 30, fontWeight: 700, color: COLORS.text,
+            letterSpacing: '-0.03em',
+          }}>
+            Everything you need to analyse road resilience
+          </h2>
+        </div>
+
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(185px, 1fr))',
-          gap: 12,
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: 14,
         }}>
           {FEATURES.map((f, i) => (
             <div
               key={f.title}
               className="rr-card"
+              onClick={() => navigate(f.link)}
               style={{
-                background: COLORS.panelElevated,
+                background: `${COLORS.panelElevated}ee`,
                 border: `1px solid ${COLORS.border}`,
-                borderRadius: 14,
-                padding: '22px 20px',
+                borderRadius: 16,
+                padding: '24px 20px',
                 cursor: 'pointer',
                 animationDelay: `${i * 60}ms`,
+                position: 'relative',
+                overflow: 'hidden',
               }}
-              onClick={() => navigate(f.link)}
             >
-              <div style={{ fontSize: 26, marginBottom: 14, lineHeight: 1 }}>{f.icon}</div>
+              {/* Subtle accent glow corner */}
               <div style={{
-                fontSize: 13, fontWeight: 700, color: COLORS.text, marginBottom: 8,
+                position: 'absolute', top: 0, right: 0,
+                width: 80, height: 80,
+                background: `radial-gradient(circle at 100% 0%, ${f.accent}18 0%, transparent 70%)`,
+                pointerEvents: 'none',
+              }} />
+
+              <div style={{
+                width: 40, height: 40, borderRadius: 10,
+                background: `${f.accent}15`,
+                border: `1px solid ${f.accent}30`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 20, marginBottom: 16,
+              }}>
+                {f.icon}
+              </div>
+              <div style={{
+                fontSize: 14, fontWeight: 700, color: COLORS.text, marginBottom: 8,
                 letterSpacing: '-0.01em',
               }}>
                 {f.title}
               </div>
               <p style={{
-                fontSize: 12, color: COLORS.textMuted, lineHeight: 1.65, marginBottom: 18,
+                fontSize: 12, color: COLORS.textMuted, lineHeight: 1.65, marginBottom: 20,
               }}>
                 {f.desc}
               </p>
-              <span style={{ fontSize: 12, color: f.color, fontWeight: 600 }}>
-                {f.cta} →
+              <span style={{
+                fontSize: 12, color: f.accent, fontWeight: 600,
+                display: 'flex', alignItems: 'center', gap: 4,
+              }}>
+                {f.cta}
+                <span style={{ opacity: 0.7 }}>→</span>
               </span>
             </div>
           ))}
         </div>
 
+        {/* Bottom pipeline strip */}
+        <div style={{
+          marginTop: 56,
+          padding: '20px 24px',
+          background: `${COLORS.panelElevated}aa`,
+          border: `1px solid ${COLORS.border}`,
+          borderRadius: 12,
+          backdropFilter: 'blur(18px)',
+        }}>
+          <div style={{
+            fontSize: 9, fontWeight: 700, letterSpacing: '0.14em',
+            color: COLORS.textCaption, textTransform: 'uppercase', marginBottom: 14,
+          }}>
+            Processing Pipeline
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 0 }}>
+            {['Satellite Image', 'Segmentation Mask', 'Skeletonisation', 'Graph Extraction', 'Criticality Analysis'].map((s, i, arr) => (
+              <div key={s} style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{
+                  padding: '5px 12px',
+                  background: COLORS.background,
+                  border: `1px solid ${COLORS.border}`,
+                  borderRadius: 6,
+                  fontSize: 11, color: COLORS.text, fontWeight: 500,
+                }}>
+                  {s}
+                </div>
+                {i < arr.length - 1 && (
+                  <div style={{ color: COLORS.accent, fontSize: 12, margin: '0 4px', opacity: 0.5 }}>→</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )

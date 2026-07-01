@@ -1,13 +1,13 @@
-// colors.js — mission-control glassmorphism palette + centrality gradient
+// colors.js — deep-space amber/blue palette for Route Resilience
 
-/* ── Centrality heatmap: emerald → amber → rose ─────────────────────────── */
+/* ── Centrality heatmap: teal → amber → red ─────────────────────────────── */
 export function centralityColor(norm) {
   const stops = [
-    [0.0,  [16,  185, 129]],   // emerald  #10B981
-    [0.25, [52,  211, 153]],   // lt emerald
+    [0.0,  [56,  189, 248]],   // sky-blue  #38BDF8 (cool = low risk)
+    [0.25, [99,  210, 200]],   // teal
     [0.5,  [252, 211, 77 ]],   // warm yellow
-    [0.75, [245, 158, 11 ]],   // amber    #F59E0B
-    [1.0,  [220, 38,  38 ]],   // rose     #DC2626
+    [0.75, [255, 122, 26 ]],   // amber     #FF7A1A
+    [1.0,  [220, 38,  38 ]],   // red       #DC2626
   ]
   let lo = stops[0], hi = stops[stops.length - 1]
   for (let i = 0; i < stops.length - 1; i++) {
@@ -28,48 +28,52 @@ export function centralityColorHex(norm) {
   return '#' + m.map(x => parseInt(x).toString(16).padStart(2, '0')).join('')
 }
 
-/* ── UI color palette ───────────────────────────────────────────────────── */
+/* ── UI color palette — deep-space amber ────────────────────────────────── */
 export const COLORS = {
-  // ── Backgrounds ───────────────────────────────────────────────────────────
-  background:    '#0A0E14',   // canvas / app shell
-  panel:         '#0F1520',   // sidebar / nav base
-  panelElevated: '#141C2B',   // cards, list items
-  panelRaised:   '#1A2237',   // tooltips, popovers
+  // ── Backgrounds — warm dark space ─────────────────────────────────────────
+  background:    '#0A0A0F',   // near-black with warm undertone
+  panel:         '#0E0C09',   // sidebar / nav base
+  panelElevated: '#161108',   // cards, list items
+  panelRaised:   '#1E1810',   // tooltips, popovers
 
-  // ── Borders ───────────────────────────────────────────────────────────────
-  border:        '#1E293B',
-  borderMid:     '#253347',
-  borderStrong:  '#2E3F55',
+  // ── Borders — warm dark ───────────────────────────────────────────────────
+  border:        '#2A2018',
+  borderMid:     '#3A2E1E',
+  borderStrong:  '#4A3C28',
 
-  // ── Typography ────────────────────────────────────────────────────────────
-  text:          '#E2EAF4',
-  textMuted:     '#8A9BB0',
-  textCaption:   '#4A5C6E',
+  // ── Typography — warm white ───────────────────────────────────────────────
+  text:          '#F5F1EA',   // warm white
+  textMuted:     '#9A8F82',   // warm gray
+  textCaption:   '#5A5048',
 
-  // ── Accent — blue ─────────────────────────────────────────────────────────
-  accent:        '#3B82F6',
-  accentSubtle:  '#162444',
-  accentHover:   '#2563EB',
+  // ── PRIMARY ACCENT — amber / orange ───────────────────────────────────────
+  accent:        '#FF7A1A',
+  accentSubtle:  '#2A1608',
+  accentHover:   '#FF9A40',
+
+  // ── SECONDARY ACCENT — sky blue ───────────────────────────────────────────
+  secondary:     '#3B9EFF',
+  secondarySubtle: '#081828',
 
   // ── Semantic ──────────────────────────────────────────────────────────────
-  success:       '#10B981',
-  successSubtle: '#0C2018',
+  success:       '#22C55E',
+  successSubtle: '#081808',
   warning:       '#F59E0B',
-  warningSubtle: '#221808',
+  warningSubtle: '#1E1408',
   danger:        '#EF4444',
-  dangerSubtle:  '#261010',
+  dangerSubtle:  '#1E0808',
 
   // ── Road network ──────────────────────────────────────────────────────────
-  edge:          '#2E4D6E',   // road segments
-  edgeCasing:    '#06090E',   // dark underpass casing
-  healed:        '#22D3EE',   // gap-healed edges (cyan)
-  path:          '#F59E0B',   // shortest path (amber)
+  edge:          '#3A2A16',   // warm dark road segments
+  edgeCasing:    '#060408',
+  healed:        '#38BDF8',   // healed edges (sky blue)
+  path:          '#FF7A1A',   // shortest path (amber)
   pathRerouted:  '#F97316',   // rerouted path (orange)
 
   // ── Nodes ─────────────────────────────────────────────────────────────────
-  nodeDefault:   '#3B82F6',   // off-heatmap junctions
-  nodeEndpoint:  '#10B981',   // leaf endpoints
-  nodeDisabled:  '#1C2B3A',   // knocked-out nodes
+  nodeDefault:   '#FF7A1A',   // amber junctions
+  nodeEndpoint:  '#22C55E',   // leaf endpoints (green)
+  nodeDisabled:  '#1A1208',   // knocked-out
   nodeHovered:   '#FCD34D',   // hover highlight
-  disconnected:  '#111C28',   // unreachable after ablation
+  disconnected:  '#120E08',   // unreachable after ablation
 }

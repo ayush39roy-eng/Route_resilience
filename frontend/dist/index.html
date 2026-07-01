@@ -3,66 +3,67 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Route Resilience — Road Network Criticality Dashboard</title>
+    <title>Route Resilience — ISRO Road Network Criticality</title>
 
     <!-- Space Grotesk (display) + Inter (UI) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:ital,opsz,wght@0,14..32,300..800;1,14..32,300..800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:ital,opsz,wght@0,14..32,300..800;1,14..32,300..800&display=swap"
       rel="stylesheet"
     />
 
     <style>
-      /* ── Design tokens ───────────────────────────────────────────────────── */
+      /* ── Design tokens — deep-space amber/blue ───────────────────────── */
       :root {
         /* Backgrounds */
-        --bg-base:       #0A0E14;
-        --bg-panel:      #0F1520;
-        --bg-elevated:   #141C2B;
-        --bg-raised:     #1A2237;
-        --bg-input:      #111826;
+        --bg-base:       #0A0A0F;
+        --bg-panel:      #0E0C09;
+        --bg-elevated:   #161108;
+        --bg-raised:     #1E1810;
 
         /* Borders */
-        --border:        #1E293B;
-        --border-mid:    #253347;
-        --border-strong: #2E3F55;
+        --border:        #2A2018;
+        --border-mid:    #3A2E1E;
+        --border-strong: #4A3C28;
 
         /* Text */
-        --text-primary:  #E2EAF4;
-        --text-secondary:#8A9BB0;
-        --text-tertiary: #4A5C6E;
+        --text-primary:  #F5F1EA;
+        --text-secondary:#9A8F82;
+        --text-tertiary: #5A5048;
 
-        /* Accent — blue */
-        --accent:        #3B82F6;
-        --accent-dim:    #162444;
-        --accent-hover:  #2563EB;
-        --accent-glow:   rgba(59,130,246,0.28);
+        /* Primary accent — amber */
+        --accent:        #FF7A1A;
+        --accent-dim:    #2A1608;
+        --accent-hover:  #FF9A40;
+        --accent-glow:   rgba(255,122,26,0.30);
+
+        /* Secondary accent — sky blue */
+        --secondary:     #3B9EFF;
+        --secondary-dim: #081828;
 
         /* Semantic */
-        --success:       #10B981;
-        --success-dim:   #0C2018;
+        --success:       #22C55E;
+        --success-dim:   #081808;
         --warning:       #F59E0B;
-        --warning-dim:   #221808;
+        --warning-dim:   #1E1408;
         --danger:        #EF4444;
-        --danger-dim:    #261010;
+        --danger-dim:    #1E0808;
 
         /* Shadows */
-        --shadow-sm:  0 2px 8px rgba(0,0,0,0.5);
-        --shadow-md:  0 4px 20px rgba(0,0,0,0.6);
-        --shadow-lg:  0 8px 40px rgba(0,0,0,0.7);
-        --shadow-xl:  0 16px 60px rgba(0,0,0,0.8);
+        --shadow-sm:  0 2px 8px rgba(0,0,0,0.6);
+        --shadow-md:  0 4px 20px rgba(0,0,0,0.7);
+        --shadow-lg:  0 8px 40px rgba(0,0,0,0.8);
+        --shadow-xl:  0 16px 60px rgba(0,0,0,0.9);
 
         /* Radii */
-        --r-sm:   4px;
-        --r-md:   8px;
-        --r-lg:   12px;
-        --r-xl:   16px;
+        --r-sm:   4px;   --r-md:  8px;
+        --r-lg:   12px;  --r-xl:  16px;
         --r-full: 9999px;
 
-        /* Spacing (4px base) */
+        /* Spacing */
         --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px;
-        --sp-4: 16px; --sp-6: 24px; --sp-8: 32px; --sp-12: 48px;
+        --sp-4: 16px; --sp-6: 24px; --sp-8: 32px;
 
         /* Motion */
         --ease:    180ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -70,7 +71,7 @@
         --ease-lg: 380ms cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      /* ── Reset ───────────────────────────────────────────────────────────── */
+      /* ── Reset ───────────────────────────────────────────────────────── */
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
       html, body, #root { height: 100%; }
 
@@ -83,14 +84,15 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         font-feature-settings: "cv11" 1, "ss01" 1;
-        /* Layered depth gradient */
+        /* Warm deep-space gradient: amber glow from bottom, cool from top */
         background-image:
-          radial-gradient(ellipse 90% 55% at 50% -5%,  rgba(15, 30, 70, 0.55) 0%, transparent 65%),
-          radial-gradient(ellipse 50% 35% at 10% 100%, rgba(10, 20, 55, 0.35) 0%, transparent 60%);
+          radial-gradient(ellipse 80% 50% at 50% 110%, rgba(255,122,26,0.14) 0%, transparent 60%),
+          radial-gradient(ellipse 60% 40% at 80% -10%, rgba(59,158,255,0.07) 0%, transparent 55%),
+          radial-gradient(ellipse 100% 60% at 50% 50%, rgba(18,12,8,0.8) 0%, transparent 100%);
         background-attachment: fixed;
       }
 
-      /* Subtle starfield texture */
+      /* Starfield texture — subtle dot grid */
       body::before {
         content: '';
         position: fixed;
@@ -98,34 +100,31 @@
         pointer-events: none;
         z-index: 0;
         background-image:
-          radial-gradient(circle, rgba(255,255,255,0.22) 0.6px, transparent 0.6px),
-          radial-gradient(circle, rgba(255,255,255,0.10) 0.6px, transparent 0.6px);
-        background-size: 137px 137px, 89px 89px;
-        background-position: 0 0, 44px 68px;
-        opacity: 0.45;
+          radial-gradient(circle, rgba(255,255,255,0.18) 0.5px, transparent 0.5px),
+          radial-gradient(circle, rgba(255,200,120,0.10) 0.5px, transparent 0.5px);
+        background-size: 127px 127px, 83px 83px;
+        background-position: 0 0, 40px 60px;
+        opacity: 0.5;
       }
 
-      #root {
-        position: relative;
-        z-index: 1;
-      }
+      #root { position: relative; z-index: 1; }
 
       button, select, input { font-family: inherit; }
 
-      /* ── Scrollbar ───────────────────────────────────────────────────────── */
+      /* ── Scrollbar ───────────────────────────────────────────────────── */
       ::-webkit-scrollbar          { width: 4px; height: 4px; }
       ::-webkit-scrollbar-track    { background: transparent; }
-      ::-webkit-scrollbar-thumb    { background: var(--border-mid); border-radius: 2px; }
-      ::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+      ::-webkit-scrollbar-thumb    { background: #3A2E1E; border-radius: 2px; }
+      ::-webkit-scrollbar-thumb:hover { background: #4A3C28; }
 
-      /* ── Focus ring ──────────────────────────────────────────────────────── */
+      /* ── Focus ring — amber ──────────────────────────────────────────── */
       :focus-visible {
-        outline: 2px solid var(--accent);
+        outline: 2px solid #FF7A1A;
         outline-offset: 2px;
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-DIYztq7o.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-vnQXzsTV.css">
+    <script type="module" crossorigin src="/assets/index-ChjR9p64.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CYI3q4Or.css">
   </head>
   <body>
     <div id="root"></div>

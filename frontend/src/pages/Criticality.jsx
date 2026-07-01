@@ -8,6 +8,7 @@ import {
   Toggle, GatekeeperRow, Divider,
 } from '../components/SidebarShell.jsx'
 import { COLORS } from '../colors.js'
+import { MapOverlay } from '../components/SpaceLoader.jsx'
 
 export default function Criticality() {
   const { activeDataset } = useDataset()
@@ -29,11 +30,7 @@ export default function Criticality() {
 
       {/* ── Map area ── */}
       <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column' }}>
-        {loading && <Overlay>Loading network…</Overlay>}
-        {error   && <Overlay color={COLORS.danger}>{error}</Overlay>}
-        {!loading && !error && !ds && (
-          <Overlay>No dataset selected — pick one in the Gallery.</Overlay>
-        )}
+        <MapOverlay loading={loading} error={error} empty={!loading && !error && !ds} />
         {graphData && (
           <NetworkMap
             graphData={graphData}
@@ -108,14 +105,3 @@ export default function Criticality() {
   )
 }
 
-function Overlay({ children, color }) {
-  return (
-    <div style={{
-      position: 'absolute', inset: 0, display: 'flex',
-      alignItems: 'center', justifyContent: 'center',
-      color: color || COLORS.textMuted, fontSize: 14,
-    }}>
-      {children}
-    </div>
-  )
-}
