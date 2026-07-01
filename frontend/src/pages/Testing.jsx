@@ -32,44 +32,12 @@ const PIPELINE_STEPS = [
   },
 ]
 
-// Messages shown during each transition (cycling terminal log)
-const TRANSITION_LOGS = [
-  // step 0 → 1 (satellite → mask)
-  [
-    'Initialising U-Net segmentation model…',
-    'Normalising pixel values to [0, 1]…',
-    'Running forward pass (encoder-decoder)…',
-    'Predicting road probability heatmap…',
-    'Applying binary threshold (τ = 0.45)…',
-    'Morphological opening — removing noise…',
-    'Filling small holes in road mask…',
-    'Mask generated ✓',
-  ],
-  // step 1 → 2 (mask → skeleton)
-  [
-    'Computing Euclidean distance transform…',
-    'Applying Zhang-Suen thinning…',
-    'Extracting 1-px centreline skeleton…',
-    'Detecting stub branches (length < 5 px)…',
-    'Pruning 14 dead-end stubs…',
-    'Smoothing centreline path…',
-    'Skeleton complete ✓',
-  ],
-  // step 2 → 3 (skeleton → graph)
-  [
-    'Scanning for junction pixels (degree ≥ 3)…',
-    'Segmenting road into edge chains…',
-    'Building node adjacency list…',
-    'Computing edge weights (length)…',
-    'Removing duplicate paths…',
-    'Merging nearby junctions…',
-    'Running betweenness-centrality…',
-    'Graph topology ready ✓',
-  ],
-]
+const HOLD_MS_MIN   = 2800
+const HOLD_MS_MAX   = 4200
+const LOADER_MS_MIN = 2000
+const LOADER_MS_MAX = 3400
 
-const HOLD_MS   = 3600   // time to display each step before transitioning
-const LOADER_MS = 2600   // duration of loading animation + log cycling
+const randBetween = (min, max) => min + Math.random() * (max - min)
 
 export default function Testing() {
   const navigate = useNavigate()
@@ -80,14 +48,6 @@ export default function Testing() {
   const [phase,       setPhase]       = useState('select')  // 'select' | 'processing' | 'done'
   const [step,        setStep]        = useState(0)
   const [stepLoading, setStepLoading] = useState(false)
-  const [logIdx,      setLogIdx]      = useState(0)        // how many log lines to show
-
-  // Cycle log messages while loading
-  useEffect(() => {
-    if (!stepLoading) { setLogIdx(0); return }
-    const t = setInterval(() => setLogIdx(i => i + 1), LOADER_MS / 8)
-    return () => clearInterval(t)
-  }, [stepLoading])
 
   // Auto-advance pipeline
   useEffect(() => {
@@ -104,12 +64,12 @@ export default function Testing() {
           setStep(next)
           setStepLoading(false)
         }
-      }, LOADER_MS)
+      }, randBetween(LOADER_MS_MIN, LOADER_MS_MAX))
       return () => clearTimeout(t)
     }
 
     if (step < PIPELINE_STEPS.length - 1) {
-      const t = setTimeout(() => setStepLoading(true), HOLD_MS)
+      const t = setTimeout(() => setStepLoading(true), randBetween(HOLD_MS_MIN, HOLD_MS_MAX))
       return () => clearTimeout(t)
     }
   }, [phase, step, stepLoading])
@@ -119,7 +79,6 @@ export default function Testing() {
     setPhase('processing')
     setStep(0)
     setStepLoading(false)
-    setLogIdx(0)
   }
 
   function handleReset() {
@@ -127,7 +86,6 @@ export default function Testing() {
     setSelected(null)
     setStep(0)
     setStepLoading(false)
-    setLogIdx(0)
   }
 
   const displayStep   = phase === 'done' ? PIPELINE_STEPS.length - 1 : step
@@ -135,10 +93,6 @@ export default function Testing() {
   const currentImgUrl = selected?.pngs_urls?.[currentKey]
     ? `${API}${selected.pngs_urls[currentKey]}`
     : null
-
-  const logLines = stepLoading
-    ? (TRANSITION_LOGS[step] ?? []).slice(0, logIdx + 1)
-    : []
 
   return (
     <div className="rr-page" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
@@ -419,35 +373,6 @@ export default function Testing() {
                   </p>
                 </div>
 
-                {/* Terminal log (during loading) */}
-                {stepLoading && logLines.length > 0 && (
-                  <div style={{
-                    marginTop: 14, padding: '10px 12px',
-                    background: 'rgba(0,0,0,0.45)',
-                    border: '1px solid rgba(255,255,255,0.06)',
-                    borderLeft: `2px solid ${COLORS.secondary}50`,
-                    borderRadius: 8,
-                    fontFamily: "'JetBrains Mono','Fira Code','Consolas',monospace",
-                    fontSize: 10.5,
-                    minHeight: 120,
-                  }}>
-                    {logLines.map((line, i) => (
-                      <div
-                        key={i}
-                        className="rr-log-line"
-                        style={{
-                          color: i === logLines.length - 1 ? COLORS.secondary : COLORS.textCaption,
-                          marginBottom: 4, lineHeight: 1.5,
-                        }}
-                      >
-                        <span style={{ opacity: 0.4 }}>{'>'} </span>
-                        {line}
-                      </div>
-                    ))}
-                    <span style={{ color: COLORS.secondary, animation: 'rr-glow-pulse 1s ease infinite' }}>▋</span>
-                  </div>
-                )}
-
                 {/* Done: stats + CTAs */}
                 {phase === 'done' && (
                   <>
@@ -471,7 +396,7 @@ export default function Testing() {
                             fontFamily: "'Space Grotesk',monospace", lineHeight: 1,
                             marginBottom: 3,
                           }}>
-                            {s.value ?? '—'}
+                            {s.value ?? 'N/A'}
                           </div>
                           <div style={{ fontSize: 9, color: COLORS.textCaption, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                             {s.label}
@@ -525,13 +450,6 @@ export default function Testing() {
                     <span style={{ opacity: 0.5 }}>Up next:</span>
                     <span style={{ color: COLORS.textMuted }}>
                       {PIPELINE_STEPS[step + 1]?.label}
-                    </span>
-                    <span style={{
-                      fontSize: 9, padding: '1px 6px', borderRadius: 3,
-                      background: `${COLORS.accent}18`, color: COLORS.accent,
-                      marginLeft: 'auto',
-                    }}>
-                      ~{(HOLD_MS / 1000).toFixed(0)}s
                     </span>
                   </div>
                 )}
