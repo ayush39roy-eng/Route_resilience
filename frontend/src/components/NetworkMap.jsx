@@ -62,6 +62,7 @@ export default function NetworkMap({
   bgMode = 'dark',
   bgImageUrls = {},
   bgImageSize = null,
+  healedPaths = [],
   // disaster mode
   disasterMode = false,
   onDisasterSelect = null,
@@ -363,6 +364,30 @@ export default function NetworkMap({
                 strokeDasharray={strokeDash} strokeLinecap="round" strokeLinejoin="round"
                 opacity={opacity} filter={filter}
               />
+            )
+          })}
+
+          {/* ═══ PASS 2.5 — Healed repair connections ════════════════════ */}
+          {showHealed && healedPaths.length > 0 && healedPaths.map((hp, i) => {
+            // repair_log uses [row, col]; toSvg expects (col, row)
+            const p1 = toSvg(hp.src[1], hp.src[0])
+            const p2 = toSvg(hp.dst[1], hp.dst[0])
+            return (
+              <g key={`hp${i}`}>
+                <line
+                  x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
+                  stroke={COLORS.healed}
+                  strokeWidth={3 / transform.scale}
+                  strokeDasharray={`${9/transform.scale},${5/transform.scale}`}
+                  strokeLinecap="round"
+                  opacity={0.88}
+                  filter="url(#rr-glow)"
+                />
+                <circle cx={p1.x} cy={p1.y} r={4/transform.scale}
+                  fill={COLORS.healed} opacity={0.75} />
+                <circle cx={p2.x} cy={p2.y} r={4/transform.scale}
+                  fill={COLORS.healed} opacity={0.75} />
+              </g>
             )
           })}
 

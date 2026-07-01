@@ -1,6 +1,6 @@
 // useGraphState.js — graph data + all interactions, keyed by datasetId
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { fetchGraph, fetchCriticality, postAblate, fetchRoute } from '../api.js'
+import { fetchGraph, fetchCriticality, postAblate, fetchRoute, fetchRepairLog } from '../api.js'
 
 export function useGraphState(datasetId) {
   const [graphData,    setGraphData]    = useState(null)
@@ -17,6 +17,7 @@ export function useGraphState(datasetId) {
   const [rerouteData,   setRerouteData]   = useState(null)
   const [ablateResult,  setAblateResult]  = useState(null)
   const [routeMode,     setRouteMode]     = useState('none')
+  const [repairLog,     setRepairLog]     = useState(null)
 
   // Load graph + criticality whenever datasetId changes
   useEffect(() => {
@@ -33,9 +34,10 @@ export function useGraphState(datasetId) {
     setRerouteData(null)
     setAblateResult(null)
     setRouteMode('none')
+    setRepairLog(null)
 
-    Promise.all([fetchGraph(datasetId), fetchCriticality(datasetId)])
-      .then(([g, c]) => { setGraphData(g); setCriticality(c); setLoading(false) })
+    Promise.all([fetchGraph(datasetId), fetchCriticality(datasetId), fetchRepairLog(datasetId)])
+      .then(([g, c, r]) => { setGraphData(g); setCriticality(c); setRepairLog(r); setLoading(false) })
       .catch(e => { setError(e.message); setLoading(false) })
   }, [datasetId])
 
@@ -127,5 +129,6 @@ export function useGraphState(datasetId) {
     routeMode, setRouteMode,
     handleNodeClick, addDisabledNodes, reset, highlightGatekeeper,
     setRouteStart, setRouteEnd,
+    repairLog,
   }
 }

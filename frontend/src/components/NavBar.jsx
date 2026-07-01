@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { to: '/gallery',     label: 'Gallery'     },
   { to: '/criticality', label: 'Criticality' },
   { to: '/simulation',  label: 'Simulation'  },
+  { to: '/testing',     label: 'Testing'     },
   { to: '/layers',      label: 'Layers'      },
   { to: '/upload',      label: 'Upload'      },
 ]
@@ -132,7 +133,7 @@ export default function NavBar() {
               e.target.style.boxShadow = 'none'
             }}
           >
-            {datasets.map(ds => (
+            {datasets.filter(ds => !ds.is_test).map(ds => (
               <option key={ds.id} value={ds.id}>{ds.name}</option>
             ))}
           </select>

@@ -18,6 +18,7 @@ export default function Criticality() {
     graphData, criticality, loading, error,
     hoveredNode, setHoveredNode,
     highlightGatekeeper,
+    repairLog,
   } = useGraphState(ds?.id)
 
   const [showHealed, setShowHealed] = useState(true)
@@ -40,6 +41,7 @@ export default function Criticality() {
             setHoveredNode={setHoveredNode}
             showHealed={showHealed}
             showHeatmap={false}
+            healedPaths={repairLog?.healed_paths ?? []}
           />
         )}
       </div>
@@ -64,6 +66,12 @@ export default function Criticality() {
               {ds.healed_edge_count > 0 && (
                 <div style={{ marginTop: 8 }}>
                   <StatRow label="Healed edges" value={ds.healed_edge_count}
+                    accent={COLORS.healed} />
+                </div>
+              )}
+              {(repairLog?.healed_paths?.length ?? 0) > 0 && (
+                <div style={{ marginTop: 8 }}>
+                  <StatRow label="Healed connections" value={repairLog.healed_paths.length}
                     accent={COLORS.healed} />
                 </div>
               )}

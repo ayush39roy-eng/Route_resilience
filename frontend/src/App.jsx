@@ -7,6 +7,7 @@ import Home        from './pages/Home.jsx'
 import Gallery     from './pages/Gallery.jsx'
 import Criticality from './pages/Criticality.jsx'
 import Simulation  from './pages/Simulation.jsx'
+import Testing     from './pages/Testing.jsx'
 import Layers      from './pages/Layers.jsx'
 import Upload      from './pages/Upload.jsx'
 import { COLORS }  from './colors.js'
@@ -46,6 +47,7 @@ function AnimatedRoutes() {
         <Route path="/gallery"     element={<PageWrap><Gallery /></PageWrap>}     />
         <Route path="/criticality" element={<PageWrap><Criticality /></PageWrap>} />
         <Route path="/simulation"  element={<PageWrap><Simulation /></PageWrap>}  />
+        <Route path="/testing"     element={<PageWrap fullFlex><Testing /></PageWrap>}     />
         <Route path="/layers"      element={<PageWrap><Layers /></PageWrap>}      />
         <Route path="/upload"      element={<PageWrap><Upload /></PageWrap>}      />
       </Routes>

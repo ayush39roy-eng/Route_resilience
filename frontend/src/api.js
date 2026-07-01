@@ -42,3 +42,13 @@ export async function fetchRoute(datasetId, start, end, disabledIds = []) {
   }
   return r.json()
 }
+
+export async function fetchRepairLog(datasetId) {
+  try {
+    const r = await fetch(`${BASE}/datasets/${datasetId}/repair_log`)
+    if (!r.ok) return { healed_paths: [], total_candidates: 0 }
+    return r.json()
+  } catch {
+    return { healed_paths: [], total_candidates: 0 }
+  }
+}

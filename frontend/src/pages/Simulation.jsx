@@ -123,6 +123,7 @@ export default function Simulation() {
     routeStart, routeEnd, routeData, rerouteData, ablateResult,
     routeMode, setRouteMode,
     handleNodeClick, addDisabledNodes, reset, highlightGatekeeper,
+    repairLog,
   } = useGraphState(ds?.id)
 
   const [showHealed,    setShowHealed]    = useState(true)
@@ -266,6 +267,23 @@ export default function Simulation() {
                 </div>
               )}
             </div>
+
+            {/* Healed connections count */}
+            {(repairLog?.healed_paths?.length ?? 0) > 0 && (
+              <div style={{
+                marginTop: 6, display: 'flex', alignItems: 'center', gap: 6,
+                padding: '5px 8px', borderRadius: 6,
+                background: `${COLORS.healed}10`, border: `1px solid ${COLORS.healed}30`,
+              }}>
+                <div style={{
+                  width: 10, height: 2, borderRadius: 1, flexShrink: 0,
+                  borderTop: `2px dashed ${COLORS.healed}`,
+                }} />
+                <div style={{ fontSize: 10, color: COLORS.healed, fontWeight: 600 }}>
+                  {repairLog.healed_paths.length} healed connection{repairLog.healed_paths.length !== 1 ? 's' : ''}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -284,6 +302,7 @@ export default function Simulation() {
             showHealed={showHealed}
             showHeatmap={true}
             onNodeClick={handleNodeClick}
+            healedPaths={repairLog?.healed_paths ?? []}
             disasterMode={disasterMode}
             onDisasterSelect={handleDisasterSelect}
             disasterNodes={disasterNodes}

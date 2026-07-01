@@ -25,7 +25,8 @@ from analysis import (
     get_components_info,
 )
 
-DATA_DIR = Path(__file__).parent.parent / "data"
+DATA_DIR     = Path(__file__).parent.parent / "data"
+TESTDATA_DIR = Path(__file__).parent.parent / "TESTDATA"
 
 
 def _find(folder: Path, keyword: str, ext: Optional[str] = None, exclude: str = "") -> Optional[Path]:
@@ -122,8 +123,22 @@ class DatasetManager:
 
         print(f"[datasets] Ready: {loaded}")
 
+        # Also scan TESTDATA (independent of DATA_DIR results)
+        if TESTDATA_DIR.exists():
+            for folder in sorted(TESTDATA_DIR.iterdir()):
+                if not folder.is_dir() or folder.name.startswith('.'):
+                    continue
+                nf = _find(folder, "node", ".json")
+                ef = _find(folder, "edge", ".json")
+                if nf and ef:
+                    ds_id = "test_" + _safe_id(folder.name)
+                    try:
+                        self._load_dataset(ds_id, folder, nf, ef, is_test=True)
+                    except Exception as e:
+                        print(f"[datasets] Error loading testdata {folder.name}: {e}")
+
     def _load_dataset(self, ds_id: str, folder: Path,
-                      nodes_file: Path, edges_file: Path):
+                      nodes_file: Path, edges_file: Path, is_test: bool = False):
         with open(nodes_file) as f:
             nodes = json.load(f)
         with open(edges_file) as f:
@@ -174,6 +189,8 @@ class DatasetManager:
             "id":                ds_id,
             "name":              folder.name,
             "folder":            folder.name,
+            "folder_path":       str(folder),
+            "is_test":           is_test,
             "node_count":        G.number_of_nodes(),
             "edge_count":        G.number_of_edges(),
             "healed_edge_count": healed,

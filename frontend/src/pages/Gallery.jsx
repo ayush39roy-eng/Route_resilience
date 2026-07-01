@@ -43,7 +43,7 @@ export default function Gallery() {
           gridTemplateColumns: 'repeat(auto-fill, minmax(255px, 1fr))',
           gap: 16,
         }}>
-          {datasets.map((ds, i) => (
+          {datasets.filter(ds => !ds.is_test).map((ds, i) => (
             <DatasetCard
               key={ds.id}
               ds={ds}

@@ -4,12 +4,15 @@ main.py — FastAPI backend for the Route Resilience multi-dataset dashboard.
 Run with:  uvicorn main:app --reload --port 8000
 """
 
+import json
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from dataset_manager import DatasetManager, DATA_DIR
+from dataset_manager import DatasetManager, DATA_DIR, TESTDATA_DIR
 from analysis import (
     ablate_nodes,
     shortest_path,
@@ -51,6 +54,10 @@ def _norm_centrality(centrality: dict) -> dict:
     return {k: v / mx for k, v in centrality.items()}
 
 
+def _static_base(meta: dict) -> str:
+    return "/testdata-static" if meta.get("is_test") else "/static"
+
+
 # ── Request models ────────────────────────────────────────────────────────────
 
 class AblateRequest(BaseModel):
@@ -63,12 +70,18 @@ class AblateRequest(BaseModel):
 def list_datasets():
     """List all available datasets with metadata + thumbnail paths."""
     datasets = mgr.list_datasets()
-    # Add thumbnail URL for each dataset
     result = []
     for ds in datasets:
         d = dict(ds)
+        base = _static_base(ds)
         if ds.get("thumbnail"):
-            d["thumbnail_url"] = f"/static/{ds['folder']}/{ds['thumbnail']}"
+            d["thumbnail_url"] = f"{base}/{ds['folder']}/{ds['thumbnail']}"
+        d["pngs_urls"] = {
+            key: f"{base}/{ds['folder']}/{fname}"
+            for key, fname in ds.get("pngs", {}).items()
+        }
+        # Don't expose internal folder_path to client
+        d.pop("folder_path", None)
         result.append(d)
     return result
 
@@ -117,6 +130,7 @@ def get_graph(ds_id: str):
         "image_size": meta.get("image_size", {"w": 512, "h": 512}),
         "pngs": meta.get("pngs", {}),
         "folder": meta.get("folder", ds_id),
+        "static_base": _static_base(meta),
     }
 
 
@@ -160,6 +174,22 @@ def get_route(
     return result
 
 
+@app.get("/api/datasets/{ds_id}/repair_log")
+def get_repair_log(ds_id: str):
+    """Return valid (healed) repair candidates from the debug repair_log.json."""
+    meta = mgr.get_meta(ds_id)
+    if not meta:
+        raise HTTPException(status_code=404, detail=f"Dataset '{ds_id}' not found")
+    log_path = Path(meta["folder_path"]) / "debug" / "repair_log.json"
+    if not log_path.exists():
+        return {"healed_paths": [], "total_candidates": 0}
+    with open(log_path) as f:
+        data = json.load(f)
+    candidates = data.get("candidates", [])
+    valid = [c for c in candidates if c.get("is_valid")]
+    return {"healed_paths": valid, "total_candidates": len(candidates)}
+
+
 @app.get("/api/health")
 def health():
     return {"status": "ok", "datasets": len(mgr.list_datasets())}
@@ -169,3 +199,5 @@ def health():
 # Must be AFTER all /api routes to avoid shadowing them.
 if DATA_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(DATA_DIR)), name="static")
+if TESTDATA_DIR.exists():
+    app.mount("/testdata-static", StaticFiles(directory=str(TESTDATA_DIR)), name="testdata-static")

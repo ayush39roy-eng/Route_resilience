@@ -1,0 +1,9 @@
+{
+  "candidates": [],
+  "optimization_stats": {
+    "original_endpoints": 5,
+    "consolidated_endpoints": 5,
+    "pruned_endpoints": 0,
+    "estimated_searches_saved": 0
+  }
+}
