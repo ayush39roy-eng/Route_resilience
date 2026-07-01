@@ -105,14 +105,21 @@ function DatasetCard({ ds, isActive, index, onSelect, onAnalyse, onSimulate }) {
         {isActive && (
           <div style={{
             position: 'absolute', top: 10, right: 10,
-            background: COLORS.accent, color: '#fff',
+            background: COLORS.secondary, color: '#fff',
             fontSize: 9, fontWeight: 700, padding: '3px 8px',
             borderRadius: 4, letterSpacing: '0.07em',
-            boxShadow: `0 0 10px ${COLORS.accent}60`,
+            boxShadow: `0 0 10px ${COLORS.secondary}60`,
           }}>
             ACTIVE
           </div>
         )}
+
+        {/* Blue tint overlay on thumbnail */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(135deg, rgba(59,158,255,0.10) 0%, transparent 60%)',
+          pointerEvents: 'none',
+        }} />
 
         {/* Gradient overlay */}
         <div style={{
@@ -138,8 +145,8 @@ function DatasetCard({ ds, isActive, index, onSelect, onAnalyse, onSimulate }) {
           display: 'grid', gridTemplateColumns: '1fr 1fr',
           gap: '4px 0', marginBottom: 12,
         }}>
-          <Stat label="Nodes"      value={ds.node_count} />
-          <Stat label="Edges"      value={ds.edge_count} />
+          <Stat label="Nodes"      value={ds.node_count} color={COLORS.secondary} />
+          <Stat label="Edges"      value={ds.edge_count} color={COLORS.secondary} />
           <Stat label="Components" value={ds.component_count}
             color={hasMultiComp ? COLORS.warning : undefined} />
           <Stat label="Healed"     value={ds.healed_edge_count}
@@ -169,8 +176,8 @@ function DatasetCard({ ds, isActive, index, onSelect, onAnalyse, onSimulate }) {
         <div style={{ display: 'flex', gap: 6, marginTop: 'auto' }}>
           <ActionBtn
             onClick={e => { e.stopPropagation(); onAnalyse() }}
-            color={COLORS.accent}
-            bg={COLORS.accentSubtle}
+            color={COLORS.secondary}
+            bg={COLORS.secondarySubtle}
           >
             Heatmap
           </ActionBtn>

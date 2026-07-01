@@ -79,7 +79,7 @@ export default function SpaceHero() {
         size: 0.14,
         sizeAttenuation: true,
         transparent: true,
-        opacity: 0.92,
+        opacity: 0.42,
       })
       const nodePoints = new THREE.Points(nodeGeo, nodeMat)
 
@@ -102,7 +102,7 @@ export default function SpaceHero() {
         size: 0.10,
         sizeAttenuation: true,
         transparent: true,
-        opacity: 0.75,
+        opacity: 0.38,
       })
       const blueNodes = new THREE.Points(blueGeo, blueMat)
 
@@ -125,7 +125,7 @@ export default function SpaceHero() {
       const edgeMat = new THREE.LineBasicMaterial({
         color: 0xFF7A1A,
         transparent: true,
-        opacity: 0.13,
+        opacity: 0.055,
       })
       const edgeLines = new THREE.LineSegments(edgeGeo, edgeMat)
 
@@ -150,7 +150,7 @@ export default function SpaceHero() {
       const blueEdgeMat = new THREE.LineBasicMaterial({
         color: 0x3B9EFF,
         transparent: true,
-        opacity: 0.10,
+        opacity: 0.045,
       })
       const blueEdgeLines = new THREE.LineSegments(blueEdgeGeo, blueEdgeMat)
 

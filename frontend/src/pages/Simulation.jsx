@@ -4,8 +4,8 @@ import { useDataset } from '../context/DatasetContext.jsx'
 import { useGraphState } from '../hooks/useGraphState.js'
 import NetworkMap from '../components/NetworkMap.jsx'
 import {
-  SidebarShell, SidebarSection, StatRow, StatGrid, MiniStat,
-  Toggle, GatekeeperRow, EfficiencyBadge,
+  SidebarShell, SidebarSection,
+  Toggle, GatekeeperRow,
 } from '../components/SidebarShell.jsx'
 import { COLORS } from '../colors.js'
 import { MapOverlay } from '../components/SpaceLoader.jsx'
@@ -195,6 +195,79 @@ export default function Simulation() {
         </div>
 
         <MapOverlay loading={loading} error={error} empty={!loading && !error && !ds} />
+
+        {/* ── Resilience HUD — floating top-left ── */}
+        {graphData && (
+          <div style={{
+            position: 'absolute', top: 20, left: 20, zIndex: 40,
+            background: 'rgba(13,11,8,0.90)',
+            border: `1px solid rgba(255,255,255,0.08)`,
+            borderTop: `1px solid ${COLORS.secondary}35`,
+            borderLeft: `1px solid ${COLORS.secondary}20`,
+            borderRadius: 12,
+            padding: '12px 14px',
+            backdropFilter: 'blur(28px)',
+            WebkitBackdropFilter: 'blur(28px)',
+            boxShadow: `0 8px 32px rgba(0,0,0,0.75), 0 0 24px ${COLORS.secondary}08`,
+            minWidth: 188,
+          }}>
+            <div style={{
+              fontSize: 9, fontWeight: 700, letterSpacing: '0.16em',
+              color: COLORS.secondary, textTransform: 'uppercase',
+              marginBottom: 10, opacity: 0.8,
+            }}>
+              Resilience Metrics
+            </div>
+
+            {/* 2×2 stat grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, marginBottom: 8 }}>
+              {[
+                { label: 'Disabled',   value: disabledNodes.size,          color: disabledNodes.size > 0 ? COLORS.danger   : COLORS.secondary },
+                { label: 'Isolated',   value: disconnCt,                   color: disconnCt > 0          ? COLORS.warning  : COLORS.secondary },
+                { label: 'Resilience', value: `${(ri*100).toFixed(0)}%`,   color: ri < 0.8 ? COLORS.danger : ri < 0.95 ? COLORS.warning : COLORS.success },
+                { label: 'Eff. Drop',  value: `${pctDrop.toFixed(1)}%`,    color: pctDrop > 10 ? COLORS.danger : pctDrop > 3 ? COLORS.warning : COLORS.success },
+              ].map(s => (
+                <div key={s.label} style={{
+                  padding: '6px 8px', borderRadius: 7,
+                  background: 'rgba(255,255,255,0.025)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                }}>
+                  <div style={{ fontSize: 8, color: COLORS.textCaption, textTransform: 'uppercase',
+                    letterSpacing: '0.11em', marginBottom: 3 }}>{s.label}</div>
+                  <div style={{ fontSize: 17, fontWeight: 700, color: s.color, lineHeight: 1,
+                    fontFamily: "'Space Grotesk','JetBrains Mono',monospace",
+                    textShadow: `0 0 10px ${s.color}50` }}>
+                    {s.value}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Efficiency badge */}
+            <div style={{
+              padding: '8px 10px', borderRadius: 8,
+              background: effBg, border: `1px solid ${effBorder}40`,
+              textAlign: 'center',
+            }}>
+              {pctDrop > 0 ? (
+                <>
+                  <div style={{ fontSize: 19, fontWeight: 700, color: effColor,
+                    fontFamily: "'Space Grotesk',monospace", lineHeight: 1,
+                    textShadow: `0 0 14px ${effColor}55` }}>
+                    -{pctDrop.toFixed(1)}%
+                  </div>
+                  <div style={{ fontSize: 10, color: COLORS.textMuted, marginTop: 3 }}>
+                    efficiency drop
+                  </div>
+                </>
+              ) : (
+                <div style={{ fontSize: 11, fontWeight: 600, color: COLORS.success }}>
+                  Network intact
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {graphData && (
           <NetworkMap
@@ -447,23 +520,6 @@ export default function Simulation() {
               </div>
             )}
           </Widget>
-        </SidebarSection>
-
-        {/* ── Resilience Metrics ── */}
-        <SidebarSection title="Resilience Metrics">
-          <StatGrid>
-            <MiniStat label="Disabled"   value={disabledNodes.size}
-              color={disabledNodes.size > 0 ? COLORS.danger : COLORS.secondary} />
-            <MiniStat label="Isolated"   value={disconnCt}
-              color={disconnCt > 0 ? COLORS.warning : COLORS.secondary} />
-            <MiniStat label="Resilience" value={`${(ri * 100).toFixed(0)}%`}
-              color={ri < 0.8 ? COLORS.danger : ri < 0.95 ? COLORS.warning : COLORS.success} />
-            <MiniStat label="Eff. drop"  value={`${pctDrop.toFixed(1)}%`}
-              color={pctDrop > 10 ? COLORS.danger : pctDrop > 3 ? COLORS.warning : COLORS.success} />
-          </StatGrid>
-          <EfficiencyBadge
-            pctDrop={pctDrop} effColor={effColor} effBg={effBg} effBorder={effBorder}
-          />
         </SidebarSection>
 
         {/* Controls */}
