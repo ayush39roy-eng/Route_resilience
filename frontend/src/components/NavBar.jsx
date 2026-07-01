@@ -10,7 +10,6 @@ const NAV_LINKS = [
   { to: '/simulation',  label: 'Simulation'  },
   { to: '/testing',     label: 'Testing'     },
   { to: '/layers',      label: 'Layers'      },
-  { to: '/upload',      label: 'Upload'      },
 ]
 
 export default function NavBar() {

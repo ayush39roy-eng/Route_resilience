@@ -9,7 +9,6 @@ import Criticality from './pages/Criticality.jsx'
 import Simulation  from './pages/Simulation.jsx'
 import Testing     from './pages/Testing.jsx'
 import Layers      from './pages/Layers.jsx'
-import Upload      from './pages/Upload.jsx'
 import { COLORS }  from './colors.js'
 
 const PAGE_VARIANTS = {
@@ -49,7 +48,6 @@ function AnimatedRoutes() {
         <Route path="/simulation"  element={<PageWrap><Simulation /></PageWrap>}  />
         <Route path="/testing"     element={<PageWrap fullFlex><Testing /></PageWrap>}     />
         <Route path="/layers"      element={<PageWrap><Layers /></PageWrap>}      />
-        <Route path="/upload"      element={<PageWrap><Upload /></PageWrap>}      />
       </Routes>
     </AnimatePresence>
   )
