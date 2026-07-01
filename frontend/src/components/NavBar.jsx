@@ -19,23 +19,30 @@ export default function NavBar() {
 
   return (
     <nav style={{
-      height: 54,
-      background: `${COLORS.panel}ee`,
+      height: 64,
+      background: `linear-gradient(180deg, ${COLORS.panel}f5 0%, ${COLORS.panel}e0 100%)`,
       borderBottom: `1px solid ${COLORS.border}`,
       display: 'flex',
       alignItems: 'center',
-      padding: '0 20px',
+      padding: '0 22px',
       flexShrink: 0,
       zIndex: 100,
       position: 'relative',
-      backdropFilter: 'blur(28px) saturate(140%)',
-      WebkitBackdropFilter: 'blur(28px) saturate(140%)',
+      backdropFilter: 'blur(40px) saturate(180%)',
+      WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+      boxShadow: '0 1px 0 rgba(255,255,255,0.04), 0 8px 40px rgba(0,0,0,0.50)',
     }}>
 
-      {/* Amber top-edge accent hairline */}
+      {/* Amber/blue top-edge accent hairline */}
       <div style={{
         position: 'absolute', top: 0, left: 0, right: 0, height: 1,
-        background: `linear-gradient(90deg, transparent, ${COLORS.accent}40 35%, ${COLORS.secondary}28 65%, transparent)`,
+        background: `linear-gradient(90deg, transparent 5%, ${COLORS.accent}55 30%, ${COLORS.secondary}40 65%, transparent 95%)`,
+        pointerEvents: 'none',
+      }} />
+      {/* Subtle inner bottom glow */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: 1,
+        background: `linear-gradient(90deg, transparent, rgba(255,255,255,0.04) 50%, transparent)`,
         pointerEvents: 'none',
       }} />
 
@@ -77,17 +84,19 @@ export default function NavBar() {
             end={to === '/'}
             className="rr-navlink"
             style={({ isActive }) => ({
-              padding: '5px 12px',
-              borderRadius: 6,
+              padding: '6px 14px',
+              borderRadius: 7,
               fontSize: 13,
               fontWeight: isActive ? 600 : 400,
               color: isActive ? COLORS.accent : COLORS.textMuted,
-              background: isActive ? `${COLORS.accent}18` : 'transparent',
-              border: `1px solid ${isActive ? `${COLORS.accent}35` : 'transparent'}`,
+              background: isActive ? `${COLORS.accent}1C` : 'transparent',
+              border: `1px solid ${isActive ? `${COLORS.accent}38` : 'transparent'}`,
               textDecoration: 'none',
               whiteSpace: 'nowrap',
-              lineHeight: '22px',
-              boxShadow: isActive ? `0 0 14px ${COLORS.accent}20` : 'none',
+              lineHeight: '24px',
+              boxShadow: isActive
+                ? `0 0 18px ${COLORS.accent}18, inset 0 1px 0 ${COLORS.accent}22`
+                : 'none',
             })}
           >
             {label}

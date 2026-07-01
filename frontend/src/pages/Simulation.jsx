@@ -322,15 +322,20 @@ export default function Simulation() {
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             boxShadow: '0 4px 20px rgba(0,0,0,0.6)',
-            display: 'flex', alignItems: 'center', gap: 8,
+            display: 'flex', alignItems: 'center', gap: 10,
+            padding: '7px 18px',
           }}>
             <span style={{
-              width: 5, height: 5, borderRadius: '50%', flexShrink: 0,
+              width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
               background: COLORS.secondary, display: 'inline-block',
-              boxShadow: `0 0 5px ${COLORS.secondary}`,
+              boxShadow: `0 0 6px ${COLORS.secondary}`,
             }} />
-            <span style={{ fontSize: 11, color: COLORS.textMuted }}>
-              Click nodes to disable · Drag to pan · Scroll to zoom
+            <span style={{ fontSize: 13, fontWeight: 500, color: COLORS.text }}>
+              Click nodes to disable
+            </span>
+            <span style={{ color: COLORS.textCaption, fontSize: 12 }}>·</span>
+            <span style={{ fontSize: 12, color: COLORS.textMuted }}>
+              Drag to pan · Scroll to zoom
             </span>
             <button
               onClick={() => setShowHint(false)}
