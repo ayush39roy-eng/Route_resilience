@@ -1,16 +1,16 @@
 {
-  "nodes": 8,
-  "edges": 6,
-  "connected_components": 2,
-  "total_length_pixels": 606.3107499061546,
+  "nodes": 28,
+  "edges": 28,
+  "connected_components": 3,
+  "total_length_pixels": 1287.427632360469,
   "healed_edges": 0,
   "coordinate_order": "row_col",
   "simplification_diagnostics": {
     "before": {
-      "node_count": 8,
-      "edge_count": 6,
-      "junction_count": 2,
-      "average_node_degree": 1.5
+      "node_count": 28,
+      "edge_count": 28,
+      "junction_count": 14,
+      "average_node_degree": 2.0
     },
     "merged_junctions": 0,
     "removed_degree2_nodes": 0,
@@ -18,10 +18,10 @@
     "removed_tiny_cycles": 0,
     "removed_duplicate_paths": 0,
     "after": {
-      "node_count": 8,
-      "edge_count": 6,
-      "junction_count": 2,
-      "average_node_degree": 1.5
+      "node_count": 28,
+      "edge_count": 28,
+      "junction_count": 14,
+      "average_node_degree": 2.0
     }
   }
 }
