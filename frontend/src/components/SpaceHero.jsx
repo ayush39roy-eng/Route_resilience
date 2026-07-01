@@ -125,7 +125,7 @@ export default function SpaceHero() {
       const edgeMat = new THREE.LineBasicMaterial({
         color: 0xFF7A1A,
         transparent: true,
-        opacity: 0.055,
+        opacity: 0.16,
       })
       const edgeLines = new THREE.LineSegments(edgeGeo, edgeMat)
 
@@ -150,7 +150,7 @@ export default function SpaceHero() {
       const blueEdgeMat = new THREE.LineBasicMaterial({
         color: 0x3B9EFF,
         transparent: true,
-        opacity: 0.045,
+        opacity: 0.13,
       })
       const blueEdgeLines = new THREE.LineSegments(blueEdgeGeo, blueEdgeMat)
 
