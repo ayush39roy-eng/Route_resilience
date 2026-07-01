@@ -38,12 +38,13 @@ export function SidebarSection({ title, children, noBorder }) {
     }}>
       {title && (
         <div style={{
-          fontSize: 12,
+          fontSize: 10,
           fontWeight: 700,
-          letterSpacing: '0.06em',
-          color: COLORS.text,
+          letterSpacing: '0.14em',
+          color: COLORS.secondary,
           textTransform: 'uppercase',
           marginBottom: 12,
+          opacity: 0.85,
         }}>
           {title}
         </div>

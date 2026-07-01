@@ -72,6 +72,7 @@ export default function NetworkMap({
   const [transform, setTransform] = useState({ x: 0, y: 0, scale: 1 })
   const [mousePos,  setMousePos]  = useState({ x: 0, y: 0 })
   const [dragRect,  setDragRect]  = useState(null)  // disaster selection box
+  const [cursor,    setCursor]    = useState('grab')
   const isPanning          = useRef(false)
   const panStart           = useRef(null)
   const isDraggingDisaster = useRef(false)
@@ -181,10 +182,13 @@ export default function NetworkMap({
       e.preventDefault()
       return
     }
-    if (e.button !== 1 && !e.altKey) return
-    isPanning.current = true
-    panStart.current = { x: e.clientX - transform.x, y: e.clientY - transform.y }
-    e.preventDefault()
+    // Allow left-click drag to pan (nodes stop propagation of their own mouseDown)
+    if (e.button === 0 || e.button === 1 || e.altKey) {
+      isPanning.current = true
+      panStart.current = { x: e.clientX - transform.x, y: e.clientY - transform.y }
+      setCursor('grabbing')
+      if (e.button === 1) e.preventDefault()
+    }
   }
 
   function handleMouseMove(e) {
@@ -204,6 +208,7 @@ export default function NetworkMap({
   }
 
   function handleMouseUp() {
+    setCursor(disasterMode ? 'crosshair' : 'grab')
     if (isDraggingDisaster.current) {
       isDraggingDisaster.current = false
       if (dragRect) {
@@ -245,7 +250,8 @@ export default function NetworkMap({
       style={{
         flex: 1, minHeight: 0, position: 'relative', overflow: 'hidden',
         background: COLORS.background,
-        cursor: isPanning.current ? 'grabbing' : 'crosshair',
+        cursor: disasterMode ? 'crosshair' : cursor,
+        userSelect: 'none',
       }}
       onWheel={handleWheel}
       onMouseDown={handleMouseDown}
@@ -260,7 +266,7 @@ export default function NetworkMap({
         <defs>
           {/* Fine dot grid — space-map texture */}
           <pattern id="rr-dot-grid" width="22" height="22" patternUnits="userSpaceOnUse">
-            <circle cx="0.7" cy="0.7" r="0.55" fill="#1A2640" />
+            <circle cx="0.7" cy="0.7" r="0.55" fill="#1C1408" />
           </pattern>
 
           {/* Radial vignette */}
@@ -378,6 +384,7 @@ export default function NetworkMap({
                 style={{ cursor: 'pointer' }}
                 onMouseEnter={() => handleNodeMouseEnter(node.id)}
                 onMouseLeave={handleNodeMouseLeave}
+                onMouseDown={e => e.stopPropagation()}
                 onClick={e => handleNodeClick(node.id, e)}
               >
                 {/* Outer glow halo for hovered/route nodes */}

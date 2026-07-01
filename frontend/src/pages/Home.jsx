@@ -64,19 +64,27 @@ export default function Home() {
         {/* Three.js node-network scene */}
         <SpaceHero />
 
-        {/* Ambient amber glow from below */}
+        {/* Amber glow from below-left */}
         <div className="rr-hero-glow" style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0,
-          height: '55%',
-          background: 'radial-gradient(ellipse 80% 100% at 50% 100%, rgba(255,122,26,0.18) 0%, transparent 70%)',
+          position: 'absolute', bottom: 0, left: 0,
+          width: '70%', height: '50%',
+          background: 'radial-gradient(ellipse 80% 100% at 20% 100%, rgba(217,123,26,0.14) 0%, transparent 70%)',
           pointerEvents: 'none', zIndex: 1,
         }} />
 
-        {/* Cool blue rim from top-right */}
+        {/* Strong blue rim from top-right */}
         <div style={{
           position: 'absolute', top: 0, right: 0,
-          width: '60%', height: '40%',
-          background: 'radial-gradient(ellipse 80% 100% at 100% 0%, rgba(59,158,255,0.10) 0%, transparent 70%)',
+          width: '65%', height: '55%',
+          background: 'radial-gradient(ellipse 80% 100% at 100% 0%, rgba(59,158,255,0.18) 0%, transparent 65%)',
+          pointerEvents: 'none', zIndex: 1,
+        }} />
+
+        {/* Blue bottom-right accent */}
+        <div style={{
+          position: 'absolute', bottom: 0, right: 0,
+          width: '40%', height: '30%',
+          background: 'radial-gradient(ellipse 100% 100% at 100% 100%, rgba(56,189,248,0.10) 0%, transparent 70%)',
           pointerEvents: 'none', zIndex: 1,
         }} />
 
@@ -115,12 +123,15 @@ export default function Home() {
             lineHeight: 1.03,
             letterSpacing: '-0.04em',
             marginBottom: 20,
-            textShadow: `0 0 80px ${COLORS.accent}30, 0 2px 40px rgba(0,0,0,0.8)`,
+            textShadow: '0 2px 40px rgba(0,0,0,0.9)',
           }}>
             Route{' '}
             <span style={{
-              color: COLORS.accent,
-              textShadow: `0 0 40px ${COLORS.accent}60, 0 0 80px ${COLORS.accent}30`,
+              background: `linear-gradient(135deg, ${COLORS.accentBright} 0%, ${COLORS.secondary} 100%)`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              filter: 'drop-shadow(0 0 20px rgba(209,130,40,0.35))',
             }}>
               Resilience
             </span>

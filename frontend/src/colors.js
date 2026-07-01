@@ -1,12 +1,12 @@
-// colors.js — deep-space amber/blue palette for Route Resilience
+// colors.js — deep-space amber + sky-blue palette
 
-/* ── Centrality heatmap: teal → amber → red ─────────────────────────────── */
+/* ── Centrality heatmap: sky-blue → amber → red ─────────────────────────── */
 export function centralityColor(norm) {
   const stops = [
-    [0.0,  [56,  189, 248]],   // sky-blue  #38BDF8 (cool = low risk)
-    [0.25, [99,  210, 200]],   // teal
-    [0.5,  [252, 211, 77 ]],   // warm yellow
-    [0.75, [255, 122, 26 ]],   // amber     #FF7A1A
+    [0.0,  [56,  189, 248]],   // sky blue  #38BDF8
+    [0.3,  [99,  210, 200]],   // teal
+    [0.55, [252, 211, 77 ]],   // warm yellow
+    [0.75, [232, 133, 26 ]],   // amber     #E8851A
     [1.0,  [220, 38,  38 ]],   // red       #DC2626
   ]
   let lo = stops[0], hi = stops[stops.length - 1]
@@ -28,52 +28,59 @@ export function centralityColorHex(norm) {
   return '#' + m.map(x => parseInt(x).toString(16).padStart(2, '0')).join('')
 }
 
-/* ── UI color palette — deep-space amber ────────────────────────────────── */
+/* ── UI palette ─────────────────────────────────────────────────────────── */
 export const COLORS = {
-  // ── Backgrounds — warm dark space ─────────────────────────────────────────
-  background:    '#0A0A0F',   // near-black with warm undertone
-  panel:         '#0E0C09',   // sidebar / nav base
-  panelElevated: '#161108',   // cards, list items
-  panelRaised:   '#1E1810',   // tooltips, popovers
+  // ── Backgrounds — warm near-black ──────────────────────────────────────────
+  background:    '#09090E',
+  panel:         '#0D0B08',
+  panelElevated: '#141008',
+  panelRaised:   '#1C1610',
 
-  // ── Borders — warm dark ───────────────────────────────────────────────────
-  border:        '#2A2018',
-  borderMid:     '#3A2E1E',
-  borderStrong:  '#4A3C28',
+  // ── Borders ────────────────────────────────────────────────────────────────
+  border:        '#281E14',
+  borderMid:     '#382A1C',
+  borderStrong:  '#483C28',
 
-  // ── Typography — warm white ───────────────────────────────────────────────
-  text:          '#F5F1EA',   // warm white
-  textMuted:     '#9A8F82',   // warm gray
-  textCaption:   '#5A5048',
+  // ── Typography ─────────────────────────────────────────────────────────────
+  text:          '#F0EDE6',   // warm white
+  textMuted:     '#948880',   // warm gray
+  textCaption:   '#564E46',
 
-  // ── PRIMARY ACCENT — amber / orange ───────────────────────────────────────
-  accent:        '#FF7A1A',
-  accentSubtle:  '#2A1608',
-  accentHover:   '#FF9A40',
+  // ── PRIMARY — amber (toned down, less eye-searing) ─────────────────────────
+  accent:        '#D97B1A',   // muted amber
+  accentBright:  '#F59332',   // brighter amber for glows only
+  accentSubtle:  '#1E1208',
+  accentHover:   '#E8901A',
 
-  // ── SECONDARY ACCENT — sky blue ───────────────────────────────────────────
+  // ── SECONDARY — sky blue (much more present now) ───────────────────────────
   secondary:     '#3B9EFF',
-  secondarySubtle: '#081828',
+  secondaryBright:'#60B8FF',
+  secondarySubtle:'#081628',
+  secondaryHover: '#5AACFF',
 
-  // ── Semantic ──────────────────────────────────────────────────────────────
+  // ── TERTIARY — cyan / teal (healed edges, accent counterpoint) ────────────
+  cyan:          '#38BDF8',
+  cyanSubtle:    '#071422',
+
+  // ── Semantic ───────────────────────────────────────────────────────────────
   success:       '#22C55E',
   successSubtle: '#081808',
   warning:       '#F59E0B',
-  warningSubtle: '#1E1408',
+  warningSubtle: '#1A1208',
   danger:        '#EF4444',
   dangerSubtle:  '#1E0808',
 
-  // ── Road network ──────────────────────────────────────────────────────────
-  edge:          '#3A2A16',   // warm dark road segments
+  // ── Road network ───────────────────────────────────────────────────────────
+  edge:          '#2A2016',   // warm dark road
   edgeCasing:    '#060408',
-  healed:        '#38BDF8',   // healed edges (sky blue)
-  path:          '#FF7A1A',   // shortest path (amber)
-  pathRerouted:  '#F97316',   // rerouted path (orange)
+  healed:        '#38BDF8',   // healed = cyan
+  path:          '#D97B1A',   // path = amber
+  pathRerouted:  '#F97316',   // rerouted = orange
 
-  // ── Nodes ─────────────────────────────────────────────────────────────────
-  nodeDefault:   '#FF7A1A',   // amber junctions
-  nodeEndpoint:  '#22C55E',   // leaf endpoints (green)
-  nodeDisabled:  '#1A1208',   // knocked-out
-  nodeHovered:   '#FCD34D',   // hover highlight
-  disconnected:  '#120E08',   // unreachable after ablation
+  // ── Nodes ──────────────────────────────────────────────────────────────────
+  nodeDefault:   '#D97B1A',   // amber
+  nodeEndpoint:  '#22C55E',
+  nodeDisabled:  '#18120A',
+  nodeHovered:   '#FCD34D',
+  disconnected:  '#100E08',
 }

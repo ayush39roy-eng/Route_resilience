@@ -32,11 +32,12 @@
         --text-secondary:#9A8F82;
         --text-tertiary: #5A5048;
 
-        /* Primary accent — amber */
-        --accent:        #FF7A1A;
-        --accent-dim:    #2A1608;
-        --accent-hover:  #FF9A40;
-        --accent-glow:   rgba(255,122,26,0.30);
+        /* Primary accent — amber (muted, warmer) */
+        --accent:        #D97B1A;
+        --accent-bright: #F59332;
+        --accent-dim:    #1E1208;
+        --accent-hover:  #E8901A;
+        --accent-glow:   rgba(217,123,26,0.28);
 
         /* Secondary accent — sky blue */
         --secondary:     #3B9EFF;
@@ -86,9 +87,10 @@
         font-feature-settings: "cv11" 1, "ss01" 1;
         /* Warm deep-space gradient: amber glow from bottom, cool from top */
         background-image:
-          radial-gradient(ellipse 80% 50% at 50% 110%, rgba(255,122,26,0.14) 0%, transparent 60%),
-          radial-gradient(ellipse 60% 40% at 80% -10%, rgba(59,158,255,0.07) 0%, transparent 55%),
-          radial-gradient(ellipse 100% 60% at 50% 50%, rgba(18,12,8,0.8) 0%, transparent 100%);
+          radial-gradient(ellipse 70% 45% at 20% 110%, rgba(217,123,26,0.12) 0%, transparent 60%),
+          radial-gradient(ellipse 65% 45% at 85% -5%,  rgba(59,158,255,0.13) 0%, transparent 60%),
+          radial-gradient(ellipse 50% 35% at 100% 90%, rgba(56,189,248,0.07) 0%, transparent 55%),
+          radial-gradient(ellipse 100% 60% at 50% 50%, rgba(16,10,6,0.85) 0%, transparent 100%);
         background-attachment: fixed;
       }
 
