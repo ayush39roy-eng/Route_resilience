@@ -149,8 +149,6 @@ function DatasetCard({ ds, isActive, index, onSelect, onAnalyse, onSimulate }) {
           <Stat label="Edges"      value={ds.edge_count} color={COLORS.secondary} />
           <Stat label="Components" value={ds.component_count}
             color={hasMultiComp ? COLORS.warning : undefined} />
-          <Stat label="Healed"     value={ds.healed_edge_count}
-            color={ds.healed_edge_count > 0 ? COLORS.healed : undefined} />
           <Stat label="Efficiency" value={ds.base_efficiency?.toFixed(5)} wide />
         </div>
 
